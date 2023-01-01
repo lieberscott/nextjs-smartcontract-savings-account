@@ -1,0 +1,420 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_mainAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_backupAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_mainAccountWithdrawalLimit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_backupAccountWithdrawalLimit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__AlreadySetTokenLimit",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__BackupWithdrawalAlreadyMadeToday",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__BackupWithdrawalLimitTooSmall",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__BackupWithdrawalTooBig",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__CallFail",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__LargeWithdrawalNotAuthorized",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__MainWithdrawalAlreadyMadeToday",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__MainWithdrawalLimitTooSmall",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__MainWithdrawalTooBig",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__NotEnoughBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__notBackup",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__notOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SECONDS_IN_DAY",
+    "outputs": [
+      {
+        "internalType": "uint24",
+        "name": "",
+        "type": "uint24"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "backupAccountEnableBigWithdrawal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_withdrawalAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "backupUserWithdrawal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBackupAccount",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBackupAccountBigWithdrawalDay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBackupAccountLastWithdrawalDay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBackupAccountWithdrawalLimit",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getEthBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMainAccount",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMainAccountLastWithdrawalDay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getMainAccountTokenWithdrawalLimit",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "mainAccountWithdrawalLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "backupAccountWithdrawalLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mainAccountLastWithdrawalDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "backupAccountLastWithdrawalDay",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct SavingsAccount.TokenWithdrawalData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMainAccountWithdrawalLimit",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getName",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getTokenBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_withdrawalAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_withdrawalAddress",
+        "type": "address"
+      }
+    ],
+    "name": "mainAccountMakeBigTokenWithdrawal",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_withdrawalAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_withdrawalAddress",
+        "type": "address"
+      }
+    ],
+    "name": "mainAccountMakeBigWithdrawal",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_withdrawalAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "mainUserWithdrawal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_mainAccountLimit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_backupAccountLimit",
+        "type": "uint256"
+      }
+    ],
+    "name": "setTokenLimits",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferErcTokenBackup",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferErcTokenMain",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  }
+]

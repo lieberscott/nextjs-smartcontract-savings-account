@@ -1,10 +1,11 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Header from "../components/Header";
-import LotteryEntrance from "../components/LotteryEntrance";
+import SavingsAccount from "../components/SavingsAccount";
 import { useMoralis } from "react-moralis";
 
-const supportedChains = ["31337", "5"];
+// Ethereum, Arbitrum, and Matic testnets and mainnets
+const supportedChains = ["31337", "5", "421613", "80001", "42161", "137"];
 
 export default function Home() {
   const { isWeb3Enabled, chainId } = useMoralis();
@@ -17,11 +18,12 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
+      <SavingsAccount className="p-8" />
       {isWeb3Enabled ? (
         <div>
           {supportedChains.includes(parseInt(chainId).toString()) ? (
             <div className="flex flex-row">
-              <LotteryEntrance className="p-8" />
+              <SavingsAccount className="p-8" />
             </div>
           ) : (
             <div>{`Please switch to a supported chainId. The supported Chain Ids are: ${supportedChains}`}</div>

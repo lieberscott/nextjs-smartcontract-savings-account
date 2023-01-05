@@ -215,47 +215,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_tokenAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getMainAccountTokenWithdrawalLimit",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "mainAccountWithdrawalLimit",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "backupAccountWithdrawalLimit",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "mainAccountLastWithdrawalDay",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "backupAccountLastWithdrawalDay",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct SavingsAccount.TokenWithdrawalData",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getMainAccountWithdrawalLimit",
     "outputs": [
@@ -295,6 +254,47 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getTokenWithdrawalData",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "mainAccountWithdrawalLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "backupAccountWithdrawalLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mainAccountLastWithdrawalDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "backupAccountLastWithdrawalDay",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct SavingsAccount.TokenWithdrawalData",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",

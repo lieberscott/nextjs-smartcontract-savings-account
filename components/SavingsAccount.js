@@ -109,17 +109,19 @@ export default function SavingsAccount() {
     }
 
 
+
     return (
         <div className="p-5">
           <h1 className="py-4 px-4 font-bold text-3xl">Savings Account Factory</h1>
           <p>This smart contract may be useful for users who have large Ethereum holdings and wish to add a layer of protection to their holdings.</p>
           { page === 1 ? <CreateNew /> : [] }
 
+
           {/* Main Account */}
-          { isWeb3Enabled ? <AccountDetails isMain={ true } account={ mainAccount } instanceAddress={ contractInstanceAddressFromMain } /> : [] }
+          { isWeb3Enabled && contractInstanceAddressFromMain !== "" ? <AccountDetails isMain={ true } account={ mainAccount } instanceAddress={ contractInstanceAddressFromMain } /> : [] }
 
 
-          <p>
+          {/* <p>
             <ol>
               <li>New user</li>
               <ul>
@@ -139,7 +141,7 @@ export default function SavingsAccount() {
                 <li>Enable large withdrawal</li>
               </ul>
             </ol>
-          </p>
+          </p> */}
             { isWeb3Enabled ? (
               <>
                 <p>

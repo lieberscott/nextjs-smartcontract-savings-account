@@ -111,13 +111,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_withdrawalAmount",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "name": "backupUserWithdrawal",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -342,13 +336,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_withdrawalAmount",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "name": "mainUserWithdrawal",
     "outputs": [],
     "stateMutability": "nonpayable",

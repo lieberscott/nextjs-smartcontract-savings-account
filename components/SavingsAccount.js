@@ -11,7 +11,8 @@ import AccountDetails from "./AccountDetails"
 export default function SavingsAccount() {
     const { Moralis, isWeb3Enabled, chainId: chainIdHex, account } = useMoralis();
     // These get re-rendered every time due to our connect button!
-    const chainId = parseInt(chainIdHex) === 1337 ? 31337 : parseInt(chainIdHex)
+    // const chainId = parseInt(chainIdHex) === 1337 ? 31337 : parseInt(chainIdHex)
+    const chainId = parseInt(chainIdHex)
     // const chainId = "31337"
     console.log("chainId : ", chainId)
     // console.log(`ChainId is ${chainId}`)
@@ -121,98 +122,6 @@ export default function SavingsAccount() {
           { isWeb3Enabled && contractInstanceAddressFromMain !== "" ? <AccountDetails isMain={ true } account={ mainAccount } instanceAddress={ contractInstanceAddressFromMain } /> : [] }
 
 
-          {/* <p>
-            <ol>
-              <li>New user</li>
-              <ul>
-                <li>Create new savings Account</li>
-              </ul>
-              <li>Main user</li>
-              <ul>
-                <li>Withdraw ETH</li>
-                <li>Withdraw ERC20</li>
-                <li>Make large withdrawal</li>
-                <li>Set withdrawal limit for ERC20 token</li>
-              </ul>
-              <li>Backup user</li>
-              <ul>
-                <li>Withdraw ETH</li>
-                <li>Withdraw ERC20</li>
-                <li>Enable large withdrawal</li>
-              </ul>
-            </ol>
-          </p> */}
-            { isWeb3Enabled ? (
-              <>
-                <p>
-                  Your Savings Account:
-                </p>
-                <p>{ contractInstanceAddressFromMain }</p>
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-                  onClick={ () => setPage(2) }
-                >
-                  Go To Your Account
-                </button>
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-                  onClick={ () => setPage(1) }
-                >
-                  Create New Savings Account
-                </button>
-              </> )  : [] }
-
-
-
-                { isWeb3Enabled ? (
-                  <>
-                <p>{ mainAccount }</p>
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-                  onClick={ async () =>
-                    await getContractFromMainAddress({
-                      onSuccess: (res) => console.log(res),
-                      onError: (error) => console.log(error)
-                    })
-                  }
-                >
-                  I am the account's main user
-                </button>
-                </>
-            ) : [] }
-
-            
-
-
-
-
-            {/* {savingsFactoryAddress ? (
-                <>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-                        onClick={async () =>
-                            await enterRaffle({
-                                // onComplete:
-                                // onError:
-                                onSuccess: handleSuccess,
-                                onError: (error) => console.log(error),
-                            })
-                        }
-                        disabled={isLoading || isFetching}
-                    >
-                        {isLoading || isFetching ? (
-                            <div className="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
-                        ) : (
-                            "Enter Raffle"
-                        )}
-                    </button>
-                    <div>Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH</div>
-                    <div>The current number of players is: {numberOfPlayers}</div>
-                    <div>The most previous winner was: {recentWinner}</div>
-                </>
-            ) : (
-                <div>Please connect to a supported chain </div>
-            )} */}
         </div>
     )
 }

@@ -18,7 +18,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <SavingsAccount className="p-8" />
+      {/* <SavingsAccount className="p-8" /> */}
       {isWeb3Enabled ? (
         <div>
           {supportedChains.includes(parseInt(chainId).toString()) ? (

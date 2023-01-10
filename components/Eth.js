@@ -62,13 +62,6 @@ export default function Eth(props) {
         (await getName().toString());
         // (await getEthBalance()).toString(); // causing errors when included in this function, but no errors when called separately
 
-        // get ERC-20 tokens that have been saved
-        let list = isMain ? JSON.parse(window.localStorage.getItem("mainAccountTokens")) : JSON.parse(window.localStorage.getItem("backupAccountTokens"));
-        list = list && list.length ? list : [];
-        const newList = list.filter((value, index, arr) => index === arr.findIndex((t) => (
-          t.contractAddress === value.contractAddress
-        ))
-      )
     }
 
 

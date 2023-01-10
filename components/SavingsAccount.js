@@ -5,8 +5,10 @@ import { useEffect, useState } from "react"
 import { useNotification } from "web3uikit"
 import { ethers } from "ethers"
 
+import Background from "./Background"
 import CreateNew from "./CreateNew"
 import AccountDetails from "./AccountDetails"
+import HowItWorks from "./HowItWorks"
 
 export default function SavingsAccount() {
     const { Moralis, isWeb3Enabled, chainId: chainIdHex, account } = useMoralis();
@@ -19,10 +21,13 @@ export default function SavingsAccount() {
     const savingsFactoryAddress = chainId in contractAddresses ? contractAddresses[chainId][0] : null
     console.log("savingsFactoryAddress : ", savingsFactoryAddress)
 
+    const zeroXAddress = "0x0000000000000000000000000000000000000000"
+
     // State hooks
     // https://stackoverflow.com/questions/58252454/react-hooks-using-usestate-vs-just-variables
     const [mainAccount, setMainAccount] = useState("");
-    const [page, setPage] = useState(0)
+    const [primaryTab, setPrimaryTab] = useState(0)
+
 
     const dispatch = useNotification()
 
@@ -65,9 +70,9 @@ export default function SavingsAccount() {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled) {
-            updateUIValues();
-        }
+      if (isWeb3Enabled) {
+        updateUIValues();
+      }
     }, [isWeb3Enabled, account]);
 
     // no list means it'll update everytime anything changes or happens
@@ -109,18 +114,42 @@ export default function SavingsAccount() {
       }
     }
 
+    const inactiveTab = "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+    const activeTab = "inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"
 
+    console.log("contractInstanceFromBackuop : ", contractInstanceAddressFromBackup)
 
     return (
         <div className="p-5">
-          <h1 className="py-4 px-4 font-bold text-3xl">Savings Account Factory</h1>
-          <p>This smart contract may be useful for users who have large Ethereum holdings and wish to add a layer of protection to their holdings.</p>
-          { page === 1 ? <CreateNew /> : [] }
 
+          <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+            <li className="mr-2">
+              <a href="#" onClick={() => setPrimaryTab(0)} className={ primaryTab === 0 ? activeTab : inactiveTab }>Background</a>
+            </li>
+            <li className="mr-2">
+              <a href="#" onClick={() => setPrimaryTab(1)} className={ primaryTab === 1 ? activeTab : inactiveTab }>How It Works</a>
+            </li>
+            <li className="mr-2">
+              <a href="#" onClick={() => setPrimaryTab(2)} className={ primaryTab === 2 ? activeTab : inactiveTab }>Primary Account</a>
+            </li>
+            <li className="mr-2">
+              <a href="#" onClick={() => setPrimaryTab(3)} className={ primaryTab === 3 ? activeTab : inactiveTab}>Backup Account</a>
+            </li>
+            <li>
+              <a href="#" onClick={() => setPrimaryTab(4)} className={ primaryTab === 4 ? activeTab : inactiveTab}>Create New Savings Account!</a>
+            </li>
+          </ul>
+
+          { primaryTab === 0 ? <Background /> : [] }
+          { primaryTab === 1 ? <HowItWorks /> : [] }
 
           {/* Main Account */}
-          { isWeb3Enabled && contractInstanceAddressFromMain !== "" ? <AccountDetails isMain={ true } account={ mainAccount } instanceAddress={ contractInstanceAddressFromMain } /> : [] }
+          { isWeb3Enabled && contractInstanceAddressFromMain !== zeroXAddress && primaryTab === 2 ? <AccountDetails isMain={ true } instanceAddress={ contractInstanceAddressFromMain } /> : [] }
+          
+          {/* Backup Account */}
+          { isWeb3Enabled && contractInstanceAddressFromBackup !== zeroXAddress && primaryTab === 3 ? <AccountDetails isMain={ false } instanceAddress={ contractInstanceAddressFromBackup } /> : [] }
 
+          { isWeb3Enabled && primaryTab === 4 ? <CreateNew /> : [] }
 
         </div>
     )

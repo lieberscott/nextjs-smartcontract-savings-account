@@ -5,10 +5,11 @@ import { useEffect, useState } from "react"
 import { useNotification } from "web3uikit"
 import { ethers } from "ethers"
 
-import CreateNew from "./CreateNew"
 import Eth from "./Eth"
 import Tokens from "./Tokens"
-import LargeWithdrawals from "./LargeWithdrawals"
+import LargeETHWithdrawals from "./LargeETHWithdrawals"
+import LargeERC20Withdrawals from "./LargeERC20Withdrawals"
+import WithdrawalLimits from "./WithdrawalLimits"
 
 
 export default function AccountDetails(props) {
@@ -28,7 +29,7 @@ export default function AccountDetails(props) {
   // current selection of the dropdown items
   const [tokenDropdownIndex, setTokenDropdownIndex] = useState(0);
 
-  const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(1)
 
   const dispatch = useNotification()
 
@@ -60,8 +61,10 @@ export default function AccountDetails(props) {
 
   const fetchNewTokenData = async () => {
 
+    const listName = isMain ? "mainAccountTokens" + chainId : "backupAccountTokens" + chainId
+
     // Add to local storage item
-    let list = isMain ? JSON.parse(window.localStorage.getItem("mainAccountTokens")) : JSON.parse(window.localStorage.getItem("backupAccountTokens"));
+    let list = JSON.parse(window.localStorage.getItem(listName))
     list = list && list.length ? list : [];
 
     // check if item is already in list
@@ -81,14 +84,11 @@ export default function AccountDetails(props) {
       
       const newItem = { index: list.length + 1, name, symbol, contractAddress: newTokenAddress, decimals } // +1 because "Select is index 0 and is not a part of the list (so list will have 0 length when we add the first item, which should be at index 1)
       list.push(newItem)
+
+      const listName = isMain ? "mainAccountTokens" + chainId : "backupAccountTokens" + chainId
+
+      window.localStorage.setItem(listName, JSON.stringify(list))
       
-      
-      if (isMain) {
-        window.localStorage.setItem("mainAccountTokens", JSON.stringify(list))
-      }
-      else {
-        window.localStorage.setItem("backupAccountTokens", JSON.stringify(list));
-      }
       
       // Add to current list
       setTokenDropdown(prev => prev.concat(newItem))
@@ -102,8 +102,9 @@ export default function AccountDetails(props) {
     (await getName().toString());
     // (await getEthBalance()).toString(); // causing errors when included in this function, but no errors when called separately
 
+    const listName = isMain ? "mainAccountTokens" + chainId : "backupAccountTokens" + chainId
     // get ERC-20 tokens that have been saved
-    let list = isMain ? JSON.parse(window.localStorage.getItem("mainAccountTokens")) : JSON.parse(window.localStorage.getItem("backupAccountTokens"));
+    let list = JSON.parse(window.localStorage.getItem(listName))
     list = list && list.length ? list : [];
     const newList = list.filter((value, index, arr) => index === arr.findIndex((t) => (
       t.contractAddress === value.contractAddress
@@ -137,7 +138,7 @@ export default function AccountDetails(props) {
     if (account) {
       updateUIValues()
     }
-  }, [account]);
+  }, [account, chainId]);
 
   useEffect(() => {
     if (tokenDropdownIndex !== 0) {
@@ -216,13 +217,9 @@ export default function AccountDetails(props) {
 
   return (
     <>
-      <p>{ isMain ? "Your Primary Account" : "Your Friend's Account (you're the backup)" }</p>
       <p>Smart Contract Address: { name ? name.toString() : "" } ({ account ? account.toString() : "" })</p>
 
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
-        <li className="mr-2">
-          <a href="#" onClick={() => setTab(0)} className={ tab === 0 ? activeTab : inactiveTab }>Home</a>
-        </li>
         <li className="mr-2">
             <a href="#" onClick={() => setTab(1)} className={ tab === 1 ? activeTab : inactiveTab }>ETH</a>
         </li>
@@ -230,16 +227,18 @@ export default function AccountDetails(props) {
             <a href="#" onClick={() => setTab(2)} className={ tab === 2 ? activeTab : inactiveTab}>ERC20 Tokens</a>
         </li>
         <li className="mr-2">
-            <a href="#" onClick={() => setTab(3)} className={ tab === 3 ? activeTab : inactiveTab}>Large Withdrawals</a>
+            <a href="#" onClick={() => setTab(3)} className={ tab === 3 ? activeTab : inactiveTab}>Large ETH Withdrawals</a>
         </li>
-        <li>
-          <a href="#" onClick={() => setTab(4)} className={ tab === 4 ? activeTab : inactiveTab}>Create New Savings Account!</a>
+        <li className="mr-2">
+            <a href="#" onClick={() => setTab(4)} className={ tab === 4 ? activeTab : inactiveTab}>Large ERC20 Withdrawals</a>
+        </li>
+        <li className="mr-2">
+            <a href="#" onClick={() => setTab(5)} className={ tab === 5 ? activeTab : inactiveTab}>Set ERC20 Withdrawal Limits</a>
         </li>
       </ul>
 
 
     <div>
-      { tab === 0 ? "Home" : "" }
 
       { tab === 1 ?
         <Eth
@@ -263,11 +262,16 @@ export default function AccountDetails(props) {
         /> : [] }
 
       { tab === 3 ?
-        <LargeWithdrawals
+        <LargeETHWithdrawals
           instanceAddress={ instanceAddress }
-          isMain={ isMain }
           ethBalance={ ethBalance }
           getEthBalance={ getEthBalance }
+          displayLastWithdrawalDay={ displayLastWithdrawalDay }
+        /> : [] }
+
+      { tab === 4 ?
+        <LargeERC20Withdrawals
+          instanceAddress={ instanceAddress }
           tokenDropdown={ tokenDropdown }
           tokenDropdownIndex={ tokenDropdownIndex }
           setTokenDropdownIndex={ setTokenDropdownIndex }
@@ -277,10 +281,21 @@ export default function AccountDetails(props) {
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
         /> : [] }
 
-        { tab === 4 ? <CreateNew /> : [] }
-
+      { tab === 5 ?
+        <WithdrawalLimits
+          instanceAddress={ instanceAddress }
+          tokenDropdown={ tokenDropdown }
+          tokenDropdownIndex={ tokenDropdownIndex }
+          setTokenDropdownIndex={ setTokenDropdownIndex }
+          fetchNewTokenData={ fetchNewTokenData }
+          getTokenBalance={ getTokenBalance }
+          tokenBalance={ tokenBalance }
+          displayLastWithdrawalDay={ displayLastWithdrawalDay }
+        /> : [] }
+        
 
       </div>
+
     </>
   )
 }

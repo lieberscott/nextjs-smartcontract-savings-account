@@ -6,7 +6,7 @@ import { useNotification } from "web3uikit"
 import { ethers } from "ethers"
 
 
-export default function LargeWithdrawals(props) {
+export default function LargeERC20Withdrawals(props) {
 
   const { account } = useMoralis();
 
@@ -19,11 +19,8 @@ export default function LargeWithdrawals(props) {
     // turns to true when user presses "Add" button next to text input
     const [getNewTokenData, setGetNewTokenData] = useState(false)
 
-    const [largeWithdrawalAmt_ETH, setLargeWithdrawalAmt_ETH] = useState("") // for display purposes
-    const [largeWithdrawalAmt_ETH_FORMATTED, setLargeWithdrawalAmt_ETH_FORMATTED] = useState("") // to be sent to the web3 function
     const [largeWithdrawalAmt_ERC20, setLargeWithdrawalAmt_ERC20] = useState("")
     const [largeWithdrawalAmt_ERC20_FORMATTED, setLargeWithdrawalAmt_ERC20_FORMATTED] = useState("")
-    const [largeWithdrawalAddress_ETH, setLargeWithdrawalAddress_ETH] = useState(account)
     const [largeWithdrawalAddress_ERC20, setLargeWithdrawalAddress_ERC20] = useState(account)
 
     const dispatch = useNotification()
@@ -39,46 +36,14 @@ export default function LargeWithdrawals(props) {
       params: { },
     });
 
-    const { data: makeBigWithdrawalData, runContractFunction: mainAccountMakeBigWithdrawal } = useWeb3Contract({
-      abi: instanceAbi,
-      contractAddress: instanceAddress,
-      functionName: "mainAccountMakeBigWithdrawal",
-      params: { _withdrawalAmount: largeWithdrawalAmt_ETH_FORMATTED, _withdrawalAddress: largeWithdrawalAddress_ETH },
-    });
 
     const { data: makeBigTokenWithdrawalData, runContractFunction: mainAccountMakeBigTokenWithdrawal } = useWeb3Contract({
       abi: instanceAbi,
       contractAddress: instanceAddress,
       functionName: "mainAccountMakeBigTokenWithdrawal",
-      params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _withdrawalAmount: largeWithdrawalAmt_ERC20_FORMATTED, _withdrawalAddress: largeWithdrawalAddress_ETH },
+      params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _withdrawalAmount: largeWithdrawalAmt_ERC20_FORMATTED, _withdrawalAddress: largeWithdrawalAddress_ERC20 },
     });
 
-
-  
-
-    const handleBigWithdrawalEth = () => {
-      // ensure eth amount is valid (not letters)
-      const isnum = /^\d+$/.test(largeWithdrawalAmt_ETH);
-      if (isnum) {
-        // convert eth amount to wei
-        const formattedEth = ethers.utils.parseUnits(largeWithdrawalAmt_ETH, "ether").toString()
-
-        // ensure withdrawal address is valid eth address
-        const isAddress = ethers.utils.isAddress(largeWithdrawalAddress_ETH)
-
-        if (isAddress) {
-          // update formattedEth state to trigger the web3 call
-          setLargeWithdrawalAmt_ETH_FORMATTED(formattedEth)
-
-        }
-        else {
-          window.alert("Withdrawal Address is not a valid Ethereum address")
-        }
-      }
-      else {
-        window.alert("Withdrawal amount is not valid")
-      }
-    }
 
     const handleBigWithdrawalErc20 = () => {
       // ensure eth amount is valid (not letters)
@@ -107,12 +72,6 @@ export default function LargeWithdrawals(props) {
       }
     }
 
-
-    useEffect(() => {
-      if (largeWithdrawalAmt_ETH_FORMATTED !== "") {
-        (async () => await mainAccountMakeBigWithdrawal())
-      }
-    }, [largeWithdrawalAmt_ETH_FORMATTED])
 
     useEffect(() => {
       if (largeWithdrawalAmt_ERC20_FORMATTED !== "") {
@@ -206,47 +165,7 @@ export default function LargeWithdrawals(props) {
           >Get Date</button>
         </div>
 
-        <div className="w-full md:w-2/3 px-3 mb-6 md:mb-0 mt-8">
-          <p className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-            ETH Balance
-          </p>
-          <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ props.ethBalance ? ethers.utils.formatEther(props.ethBalance) + " ETH" : "..." }</p>
-        </div>
-        <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-8">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-            onClick={ async () =>
-              await props.getEthBalance({
-                onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
-              })
-            }
-          >
-            Show ETH balance
-          </button>
-        </div>
-        <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
-          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-            Withdrawal Amount
-          </label>
-          <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={ largeWithdrawalAmt_ETH } onChange={ e => setLargeWithdrawalAmt_ETH(e.target.value)} type="text" placeholder="Amount" />
-        </div>
-        <div className="w-full md:w-3/4 px-3">
-          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-            Send To
-          </label>
-          <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" value={ largeWithdrawalAddress_ETH } onChange={ e => setLargeWithdrawalAddress_ETH(e.target.value)} type="text" placeholder="You can withdraw to your main address or another" />
-          <p className="text-red-500 text-xs italic">You may withdraw to your main account address, or another address. Specify here.</p>
-        </div>
-        <div className="w-full md:w-2/3 px-3 mb-6 mt-10 md:mb-0">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto" onClick={ handleBigWithdrawalEth }>
-            Make Large ETH withdrawal
-          </button>
-        </div>
-
-        <div className="w-full max-w-lg mt-6">
-          <p>OR</p>
-          <div className="flex flex-wrap -mx-3 mb-6">
+        
 
             <div className="w-full max-w-lg px-3 mb-6 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
@@ -301,17 +220,13 @@ export default function LargeWithdrawals(props) {
               </button>
             </div>
 
-          </div>
-        </div>
 
 
-      <div className="w-full max-w-lg">
-        <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
             <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
               Withdrawal Amount
             </label>
-            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={ largeWithdrawalAmt_ETH } onChange={ e => setLargeWithdrawalAmt_ERC20(e.target.value)} type="text" placeholder="Amount" />
+            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={ largeWithdrawalAmt_ERC20 } onChange={ e => setLargeWithdrawalAmt_ERC20(e.target.value)} type="text" placeholder="Amount" />
           </div>
           <div className="w-full md:w-3/4 px-3">
             <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
@@ -331,8 +246,6 @@ export default function LargeWithdrawals(props) {
             </button>
           </div>
         </div>
-      </div>
-      </div>
       </div>
   )
 }

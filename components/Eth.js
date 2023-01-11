@@ -1,4 +1,4 @@
-import { instanceAbi } from "../constants"
+import { instanceAbi, regex } from "../constants"
 // dont export from moralis when using react
 import { useMoralis, useWeb3Contract, useWeb3Transfer } from "react-moralis"
 import { useEffect, useState } from "react"
@@ -49,9 +49,11 @@ export default function Eth(props) {
     });
 
 
+    console.log("lastWithdrawalDay : ", lastWithdrawalDay)
+
     const handleDeposit = () => {
       // ensure eth amount is valid (not letters)
-      const isnum = /^\d+$/.test(depositAmount);
+      const isnum = regex.test(depositAmount);
       if (isnum) {
         // convert token amount with decimals
         const wei = ethers.utils.parseUnits(depositAmount, "ether").toString()
@@ -165,7 +167,7 @@ export default function Eth(props) {
         
         <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
           <p className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-            Daily Limit
+            Your Daily Limit
           </p>
           <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ withdrawalLimit ? ethers.utils.formatEther(withdrawalLimit) + " ETH" : "..." }</p>
         </div>
@@ -174,7 +176,7 @@ export default function Eth(props) {
           <p className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
             Last withdrawal
           </p>
-          <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ lastWithdrawalDay ? displayLastWithdrawalDay(lastWithdrawalDay.toString()) : "..." }</p>
+          <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ lastWithdrawalDay ? props.displayLastWithdrawalDay(lastWithdrawalDay.toString()) : "..." }</p>
         </div>
         <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
           <button

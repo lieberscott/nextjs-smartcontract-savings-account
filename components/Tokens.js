@@ -1,4 +1,4 @@
-import { instanceAbi, erc20Abi } from "../constants"
+import { instanceAbi, erc20Abi, regex, myTokenAddess } from "../constants"
 // dont export from moralis when using react
 import { useWeb3Contract } from "react-moralis"
 import { useEffect, useState } from "react"
@@ -16,12 +16,6 @@ export default function Tokens(props) {
     const [depositAmount, setDepositAmount] = useState("")
     const [depositAmount_Wei, setDepositAmount_Wei] = useState("")
 
-    useEffect(() => {
-      if (depositAmount_Wei !== "") {
-        transfer()
-      }
-    }, [depositAmount_Wei]);
-
 
     /* View Functions */
 
@@ -36,15 +30,22 @@ export default function Tokens(props) {
       abi: instanceAbi,
       contractAddress: instanceAddress,
       functionName: isMain ? "transferErcTokenMain" : "transferErcTokenBackup",
-      params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _amount: isMain && tokenWithdrawalData ? tokenWithdrawalData.toString()[0] : !isMain && tokenWithdrawalData ? tokenWithdrawalData.toString()[1] : "0" },
+      params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress },
     });
 
     const { data: tokenTransfer, runContractFunction: transfer } = useWeb3Contract({
       abi: erc20Abi,
-      contractAddress: instanceAddress,
+      contractAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress,
       functionName: "transfer",
-      params: { _to: instanceAddress, _amount: depositAmount_Wei }
+      params: { _to: instanceAddress, _value: depositAmount_Wei }
     });
+
+    useEffect(() => {
+      console.log("depositAmount_Wei : ", depositAmount_Wei)
+      if (depositAmount_Wei !== "" && props.tokenDropdownIndex !== 0) {
+        transfer()
+      }
+    }, [depositAmount_Wei]);
 
 
     // no list means it'll update everytime anything changes or happens
@@ -63,10 +64,10 @@ export default function Tokens(props) {
 
     const handleDeposit = () => {
       // ensure eth amount is valid (not letters)
-      const isnum = /^\d+$/.test(depositAmount);
+      const isnum = regex.test(depositAmount);
       if (isnum) {
         // convert token amount with decimals
-        const wei = ethers.utils.parseUnits(depositAmount, props.tokenDropDown[props.tokenDropdownIndex].contractAddress).toString()
+        const wei = ethers.utils.parseUnits(depositAmount, props.tokenDropdown[props.tokenDropdownIndex].decimals).toString()
         setDepositAmount_Wei(wei)
       }
       else {
@@ -161,11 +162,11 @@ export default function Tokens(props) {
 
         <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
           <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-            Daily Limit
+            Your Daily Limit
           </label>
           <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
-            { tokenWithdrawalData && isMain ? ethers.utils.formatEther(tokenWithdrawalData.toString()[0]).toString() :
-              tokenWithdrawalData && !isMain ? ethers.utils.formatEther(tokenWithdrawalData.toString()[1]).toString() :
+            { tokenWithdrawalData && isMain ? ethers.utils.formatUnits(tokenWithdrawalData[0].toString()).toString() :
+              tokenWithdrawalData && !isMain ? ethers.utils.formatUnits(tokenWithdrawalData[1].toString()).toString() :
             "..." }
           </p>
         </div>
@@ -175,8 +176,8 @@ export default function Tokens(props) {
             Last Withdrawal
           </label>
           <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
-            { tokenWithdrawalData && isMain ? props.displayLastWithdrawalDay(tokenWithdrawalData.toString()[2]) :
-              tokenWithdrawalData && !isMain ? props.displayLastWithdrawalDay(tokenWithdrawalData.toString()[3]) :
+            { tokenWithdrawalData && isMain ? props.displayLastWithdrawalDay(tokenWithdrawalData[2].toString()) :
+              tokenWithdrawalData && !isMain ? props.displayLastWithdrawalDay(tokenWithdrawalData[3].toString()) :
             "..." }
           </p>
         </div>
@@ -207,7 +208,7 @@ export default function Tokens(props) {
 
       <div className="w-full md:w-2/3 px-3 mb-6 md:mb-0 mt-10">
         <p className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-          Or
+          Or Make Deposit
         </p>
         <input className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" placeholder="Token amount" value={ depositAmount } onChange={ e => setDepositAmount(e.target.value)} />
       </div>

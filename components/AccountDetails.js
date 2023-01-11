@@ -116,6 +116,8 @@ export default function AccountDetails(props) {
       // Add to current list
       setTokenDropdown(prev => prev.concat(newItem))
       setTokenDropdownIndex(list.length)
+      setNewTokenAddress("")
+      window.alert("Token added")
     }
   }
 
@@ -223,28 +225,25 @@ export default function AccountDetails(props) {
 
 
 
-  const displayLastWithdrawalDay = (daysSinceEpochString) => {
-    const daysSinceEpochInt = parseInt(daysSinceEpochString)
-    const now = new Date().getUTCDate()
-    const today = Math.floor(now/8.64e7)
+  const displayLastWithdrawalDay = (withdrawalDay) => {
+    const withdrawalDayInt = parseInt(withdrawalDay)
+    const daysSinceEpoch = Math.floor(Date.now() / 1000 / 60 / 60 / 24)
 
-    if (daysSinceEpochInt === 0) {
+
+    if (withdrawalDayInt === 0) {
       return "Never"
     }
-    else if (today - daysSinceEpochInt === 0) {
+    else if (daysSinceEpoch - withdrawalDayInt === 0) {
       return "Today"
     }
-    else if (today - daysSinceEpochInt === 1) {
-      return "1d ago"
+    else if (daysSinceEpoch - withdrawalDayInt < 30) {
+      return (daysSinceEpoch - withdrawalDayInt) + "d ago"
     }
-    else if (today - daysSinceEpochInt < 30) {
-      return (today - daysSinceEpochInt) + "d ago"
-    }
-    else if (today - daysSinceEpochInt < 365) {
-      const months = Math.floor((today - daysSinceEpochInt) / 30)
+    else if (daysSinceEpoch - withdrawalDayInt < 365) {
+      const months = Math.floor((daysSinceEpoch - withdrawalDayInt) / 30)
       return months + "mo ago"
     }
-    else if (today - daysSinceEpochInt >= 365) {
+    else if (daysSinceEpoch - withdrawalDayInt >= 365) {
       return "Over a year ago"
     }
     else {
@@ -294,6 +293,7 @@ export default function AccountDetails(props) {
           isMain={ isMain }
           ethBalance={ ethBalance }
           getEthBalance={ getEthBalance }
+          displayLastWithdrawalDay={ displayLastWithdrawalDay }
         /> : [] }
         
       { tab === 2 ?

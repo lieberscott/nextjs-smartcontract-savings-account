@@ -1,4 +1,4 @@
-import { instanceAbi } from "../constants"
+import { instanceAbi, regex } from "../constants"
 // dont export from moralis when using react
 import { useWeb3Contract } from "react-moralis"
 import { useEffect, useState } from "react"
@@ -34,13 +34,22 @@ export default function WithdrawalLimits(props) {
     const { runContractFunction: setTokenLimits } = useWeb3Contract({
       abi: instanceAbi,
       contractAddress: instanceAddress,
-      functionName: setTokenLimits,
+      functionName: "setTokenLimits",
       params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _mainAccountLimit: mainUserLimit_FORMATTED, _backupAccountLimit: backupUserLimit_FORMATTED },
     });
+
+    // const { runContractFunction: setTokenLimits } = useWeb3Contract({
+    //   abi: instanceAbi,
+    //   contractAddress: instanceAddress,
+    //   functionName: "setTokenLimits",
+    //   params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _mainAccountLimit: mainUserLimit_FORMATTED, _backupAccountLimit: backupUserLimit_FORMATTED },
+    // });
 
 
 
     useEffect(() => {
+      console.log("mainUserLimit_FORMATTED : ", mainUserLimit_FORMATTED)
+      console.log("backupUserLimit_FORMATTED : ", backupUserLimit_FORMATTED)
       if (mainUserLimit_FORMATTED !== "" && backupUserLimit_FORMATTED !== "" && mainUserLimit >= backupUserLimit) {
         setTokenLimits()
       }
@@ -90,23 +99,18 @@ export default function WithdrawalLimits(props) {
     }
 
     const handleSetTokenLimits = () => {
-      // ensure eth amount is valid (not letters)
-      const isnumMain = /^\d+$/.test(mainUserLimit);
-      const isnumBackup = /^\d+$/.test(backupUserLimit);
-      if (isnumMain && isnumBackup) {
+      const isNumMain = regex.test(mainUserLimit);
+      const isNumBackup = regex.test(backupUserLimit);
+      console.log("isNumMain : ", isNumMain)
+      console.log("isNumBackup : ", isNumBackup)
+      if (isNumMain && isNumBackup) {
         // convert token amount with decimals
         const formattedMain = ethers.utils.parseUnits(mainUserLimit, props.tokenDropdown[props.tokenDropdownIndex].decimals).toString()
         const formattedBackup = ethers.utils.parseUnits(backupUserLimit, props.tokenDropdown[props.tokenDropdownIndex].decimals).toString()
 
-        if (isAddress) {
-          // update formattedEth state to trigger the web3 call
-          setMainUserLimit_FORMATTED(formattedMain)
-          setBackupUserLimit_FORMATTED(formattedBackup)
+        setMainUserLimit_FORMATTED(formattedMain)
+        setBackupUserLimit_FORMATTED(formattedBackup)
 
-        }
-        else {
-          window.alert("Withdrawal Address is not a valid Ethereum address")
-        }
       }
       else {
         window.alert("Withdrawal amount is not valid")
@@ -176,12 +180,12 @@ export default function WithdrawalLimits(props) {
             Daily Limit
           </label>
           <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
-            {/* { tokenWithdrawalData && isMain ? ethers.utils.formatEther(tokenWithdrawalData.toString()[0]).toString() :
-              tokenWithdrawalData && !isMain ? ethers.utils.formatEther(tokenWithdrawalData.toString()[1]).toString() :
-            "..." } */}
-            { tokenWithdrawalData && isMain ? ethers.utils.formatEther(tokenWithdrawalData.toString()[0]).toString() :
-              tokenWithdrawalData && isMain ? ethers.utils.formatEther(tokenWithdrawalData.toString()[1]).toString()  :
+            { tokenWithdrawalData && isMain ? tokenWithdrawalData.toString()[0] :
+              tokenWithdrawalData && !isMain ? tokenWithdrawalData.toString()[1] :
             "..." }
+            {/* { tokenWithdrawalData && isMain ? ethers.utils.parseUnits(tokenWithdrawalData.toString()[0]).toString() :
+              tokenWithdrawalData && !isMain ? ethers.utils.parseUnits(tokenWithdrawalData.toString()[1]).toString()  :
+            "..." } */}
           </p>
         </div>
         <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0 mt-6">

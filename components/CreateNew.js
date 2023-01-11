@@ -138,7 +138,7 @@ export default function CreateNew(props) {
           <form className="w-full max-w-lg">
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
+              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                 Name (optional)
               </label>
               <p className="text-gray-600 text-xs italic">This is stored on-chain so you can identify it. The shorter, the cheaper.</p>
@@ -149,14 +149,14 @@ export default function CreateNew(props) {
 
             <div className="flex flex-wrap -mx-3 mb-6">
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0 align-baseline">
-                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                   Primary Account Address
                 </label>
                 <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-primary-address" type="text" placeholder={account} onChange={(e) => setMainAccount(e.target.value) } />
                 <p className="text-red-500 text-xs italic">Please fill out this field.</p>
               </div>
               <div className="w-full md:w-1/2 px-3">
-                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                   Daily ETH withdrawal limit
                 </label>
                 <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-primary-eth-limit" type="number" min="0" placeholder="0.5" value={ mainAccountWithdrawalLimit_Eth } onChange={(e) => handleMainAccountLimit(e.target.value) } />
@@ -165,14 +165,14 @@ export default function CreateNew(props) {
 
             <div className="flex flex-wrap -mx-3 mb-6">
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                   Backup Account Address
                 </label>
                 <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-backup-address" type="text" placeholder={account} value={backupAccount} onChange={(e) => setBackupAccount(e.target.value) } />
                 <p className="text-red-500 text-xs italic">Please fill out this field.</p>
               </div>
               <div className="w-full md:w-1/2 px-3">
-                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                   Daily ETH withdrawal limit
                 </label>
                 <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-backup-eth-limit" type="number" min="0" placeholder="0.02" value={ backupAccountWithdrawalLimit_Eth } onChange={(e) => handleBackupAccountLimit(e.nativeEvent.value) } />
@@ -181,7 +181,7 @@ export default function CreateNew(props) {
 
             <div className="flex flex-wrap -mx-3 mb-6">
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                   Initial ETH Deposit (optional)
                 </label>
                 <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-backup-address" type="text" placeholder="0" value={ initialDeposit_Eth } onChange={(e) => handleInitialDeposit(e.target.value) } />

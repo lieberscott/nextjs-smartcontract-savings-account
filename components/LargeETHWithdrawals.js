@@ -1,4 +1,4 @@
-import { instanceAbi, erc20Abi } from "../constants"
+import { instanceAbi, erc20Abi, regex } from "../constants"
 // dont export from moralis when using react
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { useEffect, useState } from "react"
@@ -41,7 +41,7 @@ export default function LargeETHWithdrawals(props) {
 
     const handleBigWithdrawalEth = () => {
       // ensure eth amount is valid (not letters)
-      const isnum = /^\d+$/.test(largeWithdrawalAmt_ETH);
+      const isnum = regex.test(largeWithdrawalAmt_ETH);
       if (isnum) {
         // convert eth amount to wei
         const formattedEth = ethers.utils.parseUnits(largeWithdrawalAmt_ETH, "ether").toString()

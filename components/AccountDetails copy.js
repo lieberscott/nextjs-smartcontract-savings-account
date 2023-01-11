@@ -1,4 +1,4 @@
-import { contractAddresses, factoryAbi, instanceAbi, erc20Abi } from "../constants"
+import { contractAddresses, factoryAbi, instanceAbi, erc20Abi, regex } from "../constants"
 // dont export from moralis when using react
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { useEffect, useState } from "react"
@@ -155,7 +155,7 @@ export default function AccountDetails(props) {
 
     const handleBigWithdrawalEth = () => {
       // ensure eth amount is valid (not letters)
-      const isnum = /^\d+$/.test(largeWithdrawalAmt_ETH);
+      const isnum = regex.test(largeWithdrawalAmt_ETH);
       if (isnum) {
         // convert eth amount to wei
         const formattedEth = ethers.utils.parseUnits(largeWithdrawalAmt_ETH, "ether").toString()
@@ -180,7 +180,7 @@ export default function AccountDetails(props) {
 
     const handleBigWithdrawalErc20 = () => {
       // ensure eth amount is valid (not letters)
-      const isnum = /^\d+$/.test(largeWithdrawalAmt_ERC20);
+      const isnum = regex.test(largeWithdrawalAmt_ERC20);
       if (isnum) {
         // convert token amount with decimals
         const formattedErc20 = ethers.utils.parseUnits(largeWithdrawalAmt_ERC20, tokenDropdown[tokenDropdownIndex].decimals).toString()

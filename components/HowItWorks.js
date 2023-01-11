@@ -14,13 +14,13 @@ export default function HowItWorks(props) {
         <li className="flex">
           <svg className="w-4 h-4 mr-1.5 text-green-500 dark:text-green-400 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
           <p><strong className="font-semibold text-gray-900 dark:text-black:400">Read the "Background" tab to understand the general setup. </strong>
-          The account is for people who want an extra layer of security for users who control their own wallet. This can not be used to backup centralized exchange accounts.
+          The account is for people who want an extra layer of security for users who control their own wallet. Note: This can not be used to backup centralized exchange accounts.
           </p>
         </li>
         <li className="flex">
           <svg className="w-4 h-4 mr-1.5 text-green-500 dark:text-green-400 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
           <p><strong className="font-semibold text-gray-900 dark:text-black:400">The backup account user should be someone (semi-)trusted. </strong>
-          This can be a friend, spouse, or family member. They need to have a wallet address that they control (not on a centralized exchange). If they choose to steal from you, they can gain access to a small portion of your funds (depending on the withdrawal limits you set).
+          This can be a friend, spouse, or family member. They need to have a wallet address that they control (not on a centralized exchange). They should be (semi-)trusted, because if they choose to steal from you, they can gain access to a small portion of your funds (depending on the withdrawal limits you set).
           </p>
         </li>
         <li className="flex">
@@ -59,19 +59,19 @@ export default function HowItWorks(props) {
         </li>
         <li className="flex">
           <svg className="w-4 h-4 mr-1.5 text-green-500 dark:text-green-400 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-          <p><strong className="font-semibold text-gray-900 dark:text-black:400">For the daily withdrawal limits, we recommend a ratio between the Main Account and the Backup Account of about 20:1.</strong>
-          For example, a Main Account Daily Limit of 1 ETH, Backup Account Daily Limit of 0.05 ETH. This will depend on the total amoutn of ETH -- and each token -- you plan on depositing.
+          <p><strong className="font-semibold text-gray-900 dark:text-black:400">For the daily withdrawal limits, we recommend a ratio between the Main Account and the Backup Account of about 20:1. </strong>
+          For example, a Main Account Daily Limit of 1 ETH, Backup Account Daily Limit of 0.05 ETH. This will depend on the total amount of ETH -- and each token -- you plan on depositing.
         </p>
         </li>
         <li className="flex">
           <svg className="w-4 h-4 mr-1.5 text-green-500 dark:text-green-400 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-          <p><strong className="font-semibold text-gray-900 dark:text-black:400">When the Backup Account enables a large withdrawal, it applies to both ETH and any ERC20 token.</strong>
-          Large withdrawals do not need to be authorized for each token. One authorization applies to all ETH and tokens in the account.
+          <p><strong className="font-semibold text-gray-900 dark:text-black:400">When the Backup Account enables a large withdrawal, it applies to both ETH and any ERC20 token. </strong>
+          Large withdrawals do not need to be authorized for each token. One authorization applies to all ETH and all tokens in the account.
           </p>
         </li>
         <li className="flex">
           <svg className="w-4 h-4 mr-1.5 text-green-500 dark:text-green-400 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-          <p><strong className="font-semibold text-gray-900 dark:text-black:400">Once a large withdrawal is authorized, the main account user may withdraw as much and as frequently that entire day, until 0:00 UTC time the next day.</strong>
+          <p><strong className="font-semibold text-gray-900 dark:text-black:400">Once a large withdrawal is authorized, the main account user may withdraw as much and as frequently that entire day, until 0:00 UTC time the next day. </strong>
           Large withdrawals enable the main account user to have free and unlimied access to their funds for that day.
           </p>
         </li>

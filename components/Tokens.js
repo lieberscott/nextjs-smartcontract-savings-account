@@ -1,4 +1,4 @@
-import { instanceAbi } from "../constants"
+import { instanceAbi, erc20Abi } from "../constants"
 // dont export from moralis when using react
 import { useWeb3Contract } from "react-moralis"
 import { useEffect, useState } from "react"
@@ -11,14 +11,16 @@ export default function Tokens(props) {
     const instanceAddress = props.instanceAddress
     const isMain = props.isMain
 
-    // updates when user types into text input
-    const [newTokenAddress, setNewTokenAddress] = useState("")
-
-    // turns to true when user presses "Add" button next to text input
-    const [getNewTokenData, setGetNewTokenData] = useState(false)
-
-
     const dispatch = useNotification()
+
+    const [depositAmount, setDepositAmount] = useState("")
+    const [depositAmount_Wei, setDepositAmount_Wei] = useState("")
+
+    useEffect(() => {
+      if (depositAmount_Wei !== "") {
+        transfer()
+      }
+    }, [depositAmount_Wei]);
 
 
     /* View Functions */
@@ -37,14 +39,13 @@ export default function Tokens(props) {
       params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _amount: isMain && tokenWithdrawalData ? tokenWithdrawalData.toString()[0] : !isMain && tokenWithdrawalData ? tokenWithdrawalData.toString()[1] : "0" },
     });
 
+    const { data: tokenTransfer, runContractFunction: transfer } = useWeb3Contract({
+      abi: erc20Abi,
+      contractAddress: instanceAddress,
+      functionName: "transfer",
+      params: { _to: instanceAddress, _amount: depositAmount_Wei }
+    });
 
-
-    useEffect(() => {
-      if (getNewTokenData) {
-        props.fetchNewTokenData()
-        setGetNewTokenData(false)
-      }
-    }, [getNewTokenData])
 
     // no list means it'll update everytime anything changes or happens
     // empty list means it'll run once after the initial rendering
@@ -58,6 +59,20 @@ export default function Tokens(props) {
     //         utils.id("RaffleEnter(address)"),
     //     ],
     // }
+
+
+    const handleDeposit = () => {
+      // ensure eth amount is valid (not letters)
+      const isnum = /^\d+$/.test(depositAmount);
+      if (isnum) {
+        // convert token amount with decimals
+        const wei = ethers.utils.parseUnits(depositAmount, props.tokenDropDown[props.tokenDropdownIndex].contractAddress).toString()
+        setDepositAmount_Wei(wei)
+      }
+      else {
+        window.alert("Withdrawal amount is not valid")
+      }
+    }
 
     const handleNewNotification = () => {
         dispatch({
@@ -83,19 +98,6 @@ export default function Tokens(props) {
       // console.log("selectedIndex : ", target.selectedIndex)
       if (target.value !== "Select") {
         props.setTokenDropdownIndex(target.selectedIndex)
-      }
-    }
-
-
-    const handleAddNewToken = async () => {
-      const isValid = ethers.utils.isAddress(newTokenAddress)
-
-      if (!isValid) {
-        window.alert("Invalid token address")
-        return;
-      }
-      else {
-        setGetNewTokenData(true)
       }
     }
   
@@ -127,13 +129,13 @@ export default function Tokens(props) {
             Or
           </label>
           <div className="relative">
-            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={newTokenAddress} onChange={ (e) => setNewTokenAddress(e.target.value) } placeholder="Paste token address" />
+            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={props.newTokenAddress} onChange={ (e) => props.setNewTokenAddress(e.target.value) } placeholder="Paste token address" />
           </div>
         </div>
         <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <button
             className="bg-blue-500 hover:bg-blue-700 md:mt-7 text-white font-bold py-2 px-4 rounded ml-auto"
-            onClick={ () => handleAddNewToken() }
+            onClick={ () => props.handleAddNewToken() }
           >Add</button>
         </div>
           
@@ -141,7 +143,7 @@ export default function Tokens(props) {
           <p className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
             Balance
           </p>
-          <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ props.tokenBalance ? props.tokenBalance.toString() : "..." }</p>
+          <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ props.tokenBalance ? ethers.utils.formatEther(props.tokenBalance.toString()).toString() : "..." }</p>
         </div>
         <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
           <button
@@ -162,8 +164,8 @@ export default function Tokens(props) {
             Daily Limit
           </label>
           <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
-            { tokenWithdrawalData && isMain ? tokenWithdrawalData.toString()[0] :
-              tokenWithdrawalData && !isMain ? tokenWithdrawalData.toString()[1] :
+            { tokenWithdrawalData && isMain ? ethers.utils.formatEther(tokenWithdrawalData.toString()[0]).toString() :
+              tokenWithdrawalData && !isMain ? ethers.utils.formatEther(tokenWithdrawalData.toString()[1]).toString() :
             "..." }
           </p>
         </div>
@@ -189,19 +191,37 @@ export default function Tokens(props) {
         >
           Get Wdrawal Data
         </button>
+        <div className="w-full md:w-2/3 px-3 mb-6 md:mb-0">
+          <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
+          onClick={ async () =>
+            props.tokenDropdownIndex !== 0 ? makeTokenWithdrawal({
+              onSuccess: (res) => console.log(res.toString()),
+              onError: (error) => console.log(error)
+            }) : window.alert("Press buttons to get token balance and withdrawal data first") 
+          }
+        >
+          Make Token Withdrawal Now
+        </button>
         </div>
 
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-        onClick={ async () =>
-          props.tokenDropdownIndex !== 0 ? makeTokenWithdrawal({
-            onSuccess: (res) => console.log(res.toString()),
-            onError: (error) => console.log(error)
-          }) : window.alert("Press buttons to get token balance and withdrawal data first") 
-        }
-      >
-        Make Token Withdrawal Now
-      </button>
+      <div className="w-full md:w-2/3 px-3 mb-6 md:mb-0 mt-10">
+        <p className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+          Or
+        </p>
+        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" placeholder="Token amount" value={ depositAmount } onChange={ e => setDepositAmount(e.target.value)} />
+      </div>
+      <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-16">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
+          onClick={ handleDeposit }
+        >
+          Deposit Token
+        </button>
+      </div>
+      <p className="text-red-500 text-xs italic">You can also choose to deposit by sending the token directly to the contract address listed at the top of the page.</p>
+      
+        </div>
     </div>
   )
 }

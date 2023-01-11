@@ -1,4 +1,4 @@
-import { instanceAbi } from "../constants"
+import { erc20Abi, instanceAbi, myTokenAddress } from "../constants"
 // dont export from moralis when using react
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { useEffect, useState } from "react"
@@ -10,6 +10,7 @@ import Tokens from "./Tokens"
 import LargeETHWithdrawals from "./LargeETHWithdrawals"
 import LargeERC20Withdrawals from "./LargeERC20Withdrawals"
 import WithdrawalLimits from "./WithdrawalLimits"
+import EnableBigWithdrawals from "./EnableBigWithdrawals"
 
 
 export default function AccountDetails(props) {
@@ -25,6 +26,8 @@ export default function AccountDetails(props) {
 
   // list of the dropdown items
   const [tokenDropdown, setTokenDropdown] = useState([{ index: "0", name: "Select", contractAddress: "none", decimals: "0" }]);
+  const [newTokenAddress, setNewTokenAddress] = useState("")
+  const [getNewTokenData, setGetNewTokenData] = useState(false)
 
   // current selection of the dropdown items
   const [tokenDropdownIndex, setTokenDropdownIndex] = useState(0);
@@ -34,14 +37,6 @@ export default function AccountDetails(props) {
   const dispatch = useNotification()
 
   /* View Functions */
-
-
-  const { data: name, runContractFunction: getName } = useWeb3Contract({
-    abi: instanceAbi,
-    contractAddress: instanceAddress,
-    functionName: "getName",
-    params: { },
-  });
 
 
   const { data: ethBalance, runContractFunction: getEthBalance } = useWeb3Contract({
@@ -56,6 +51,34 @@ export default function AccountDetails(props) {
     contractAddress: instanceAddress,
     functionName: "getTokenBalance",
     params: { _tokenAddress: tokenDropdown[tokenDropdownIndex].contractAddress },
+  });
+
+  const { data: accountName, runContractFunction: getName } = useWeb3Contract({
+    abi: instanceAbi,
+    contractAddress: instanceAddress,
+    functionName: "getName",
+    params: { },
+  });
+
+  const { data: tokenName, runContractFunction: getTokenName } = useWeb3Contract({
+    abi: erc20Abi,
+    contractAddress: newTokenAddress,
+    functionName: "name",
+    params: { },
+  });
+
+  const { data: tokenSymbol, runContractFunction: getTokenSymbol } = useWeb3Contract({
+    abi: erc20Abi,
+    contractAddress: newTokenAddress,
+    functionName: "symbol",
+    params: { },
+  });
+
+  const { data: tokenDecimals, runContractFunction: getTokenDecimals } = useWeb3Contract({
+    abi: erc20Abi,
+    contractAddress: newTokenAddress,
+    functionName: "decimals",
+    params: { },
   });
 
 
@@ -99,8 +122,8 @@ export default function AccountDetails(props) {
 
 
   const updateUIValues = async () => {
-    (await getName().toString());
-    // (await getEthBalance()).toString(); // causing errors when included in this function, but no errors when called separately
+
+    await getName()
 
     const listName = isMain ? "mainAccountTokens" + chainId : "backupAccountTokens" + chainId
     // get ERC-20 tokens that have been saved
@@ -132,7 +155,24 @@ export default function AccountDetails(props) {
 
   }
 
+  const handleAddNewToken = async () => {
+    const isValid = ethers.utils.isAddress(newTokenAddress)
 
+    if (!isValid) {
+      window.alert("Invalid token address")
+      return;
+    }
+    else {
+      setGetNewTokenData(true)
+    }
+  }
+
+  useEffect(() => {
+    if (getNewTokenData) {
+      fetchNewTokenData()
+      setGetNewTokenData(false)
+    }
+  }, [getNewTokenData])
 
   useEffect(() => {
     if (account) {
@@ -217,7 +257,7 @@ export default function AccountDetails(props) {
 
   return (
     <>
-      <p>Smart Contract Address: { name ? name.toString() : "" } ({ account ? account.toString() : "" })</p>
+      <p>Smart Contract Address: { accountName ? accountName.toString() : "" } ({ account ? account.toString() : "" })</p>
 
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
         <li className="mr-2">
@@ -226,15 +266,23 @@ export default function AccountDetails(props) {
         <li className="mr-2">
             <a href="#" onClick={() => setTab(2)} className={ tab === 2 ? activeTab : inactiveTab}>ERC20 Tokens</a>
         </li>
-        <li className="mr-2">
-            <a href="#" onClick={() => setTab(3)} className={ tab === 3 ? activeTab : inactiveTab}>Large ETH Withdrawals</a>
-        </li>
-        <li className="mr-2">
-            <a href="#" onClick={() => setTab(4)} className={ tab === 4 ? activeTab : inactiveTab}>Large ERC20 Withdrawals</a>
-        </li>
-        <li className="mr-2">
-            <a href="#" onClick={() => setTab(5)} className={ tab === 5 ? activeTab : inactiveTab}>Set ERC20 Withdrawal Limits</a>
-        </li>
+        { isMain ?
+        <>
+          <li className="mr-2">
+              <a href="#" onClick={() => setTab(3)} className={ tab === 3 ? activeTab : inactiveTab}>Large ETH Withdrawals</a>
+          </li>
+          <li className="mr-2">
+              <a href="#" onClick={() => setTab(4)} className={ tab === 4 ? activeTab : inactiveTab}>Large ERC20 Withdrawals</a>
+          </li>
+          <li className="mr-2">
+              <a href="#" onClick={() => setTab(5)} className={ tab === 5 ? activeTab : inactiveTab}>Set ERC20 Withdrawal Limits</a>
+          </li>
+        </> :
+        <>
+          <li className="mr-2">
+            <a href="#" onClick={() => setTab(6)} className={ tab === 6 ? activeTab : inactiveTab}>Enable Large Withdrawal</a>
+          </li>
+        </> }
       </ul>
 
 
@@ -254,8 +302,11 @@ export default function AccountDetails(props) {
           isMain={ isMain }
           tokenDropdown={ tokenDropdown }
           tokenDropdownIndex={ tokenDropdownIndex }
+          newTokenAddress={ newTokenAddress }
+          setNewTokenAddress={ setNewTokenAddress }
           setTokenDropdownIndex={ setTokenDropdownIndex }
           fetchNewTokenData={ fetchNewTokenData }
+          handleAddNewToken={ handleAddNewToken }
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
@@ -272,10 +323,14 @@ export default function AccountDetails(props) {
       { tab === 4 ?
         <LargeERC20Withdrawals
           instanceAddress={ instanceAddress }
+          isMain={ isMain }
           tokenDropdown={ tokenDropdown }
           tokenDropdownIndex={ tokenDropdownIndex }
+          newTokenAddress={ newTokenAddress }
+          setNewTokenAddress={ setNewTokenAddress }
           setTokenDropdownIndex={ setTokenDropdownIndex }
           fetchNewTokenData={ fetchNewTokenData }
+          handleAddNewToken={ handleAddNewToken }
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
@@ -284,14 +339,25 @@ export default function AccountDetails(props) {
       { tab === 5 ?
         <WithdrawalLimits
           instanceAddress={ instanceAddress }
+          isMain={ isMain }
           tokenDropdown={ tokenDropdown }
           tokenDropdownIndex={ tokenDropdownIndex }
           setTokenDropdownIndex={ setTokenDropdownIndex }
+          newTokenAddress={ newTokenAddress }
+          setNewTokenAddress={ setNewTokenAddress }
           fetchNewTokenData={ fetchNewTokenData }
+          handleAddNewToken={ handleAddNewToken }
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
         /> : [] }
+
+        { tab === 6 ?
+          <EnableBigWithdrawals
+            instanceAddress={ instanceAddress }
+            displayLastWithdrawalDay={ displayLastWithdrawalDay}
+          />
+        : [] }
         
 
       </div>

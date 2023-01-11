@@ -13,12 +13,6 @@ export default function LargeERC20Withdrawals(props) {
     const instanceAddress = props.instanceAddress
     const isMain = props.isMain
 
-    // updates when user types into text input
-    const [newTokenAddress, setNewTokenAddress] = useState("")
-
-    // turns to true when user presses "Add" button next to text input
-    const [getNewTokenData, setGetNewTokenData] = useState(false)
-
     const [largeWithdrawalAmt_ERC20, setLargeWithdrawalAmt_ERC20] = useState("")
     const [largeWithdrawalAmt_ERC20_FORMATTED, setLargeWithdrawalAmt_ERC20_FORMATTED] = useState("")
     const [largeWithdrawalAddress_ERC20, setLargeWithdrawalAddress_ERC20] = useState(account)
@@ -79,12 +73,6 @@ export default function LargeERC20Withdrawals(props) {
       }
     }, [largeWithdrawalAmt_ERC20_FORMATTED])
 
-    useEffect(() => {
-      if (getNewTokenData) {
-        props.fetchNewTokenData()
-        setGetNewTokenData(false)
-      }
-    }, [getNewTokenData])
 
     // no list means it'll update everytime anything changes or happens
     // empty list means it'll run once after the initial rendering
@@ -124,19 +112,6 @@ export default function LargeERC20Withdrawals(props) {
       // console.log("selectedIndex : ", target.selectedIndex)
       if (target.value !== "Select") {
         props.setTokenDropdownIndex(target.selectedIndex)
-      }
-    }
-
-
-    const handleAddNewToken = async () => {
-      const isValid = ethers.utils.isAddress(newTokenAddress)
-
-      if (!isValid) {
-        window.alert("Invalid token address")
-        return;
-      }
-      else {
-        setGetNewTokenData(true)
       }
     }
 
@@ -190,13 +165,13 @@ export default function LargeERC20Withdrawals(props) {
                 Or
               </label>
               <div className="relative">
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={newTokenAddress} onChange={ (e) => setNewTokenAddress(e.target.value) } placeholder="Paste token address" />
+                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={props.newTokenAddress} onChange={ (e) => props.setNewTokenAddress(e.target.value) } placeholder="Paste token address" />
               </div>
             </div>
             <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
               <button
                 className="bg-blue-500 hover:bg-blue-700 md:mt-7 text-white font-bold py-2 px-4 rounded ml-auto"
-                onClick={ () => handleAddNewToken() }
+                onClick={ () => props.handleAddNewToken() }
               >Add</button>
             </div>
           
@@ -204,7 +179,7 @@ export default function LargeERC20Withdrawals(props) {
               <p className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                 Balance
               </p>
-              <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ props.tokenBalance ? props.tokenBalance.toString() : "..." }</p>
+              <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ props.tokenBalance ? ethers.utils.formatEther(props.tokenBalance.toString()).toString() : "..." }</p>
             </div>
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
               <button

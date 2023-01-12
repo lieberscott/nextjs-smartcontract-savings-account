@@ -8,7 +8,7 @@
       },
       {
         "internalType": "address",
-        "name": "_backupAccount",
+        "name": "_safekeeperAccount",
         "type": "address"
       },
       {
@@ -18,7 +18,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_backupAccountWithdrawalLimit",
+        "name": "_safekeeperAccountWithdrawalLimit",
         "type": "uint256"
       },
       {
@@ -33,16 +33,6 @@
   {
     "inputs": [],
     "name": "SavingsAccount__AlreadySetTokenLimit",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "SavingsAccount__BackupWithdrawalAlreadyMadeToday",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "SavingsAccount__BackupWithdrawalLimitTooSmall",
     "type": "error"
   },
   {
@@ -72,12 +62,22 @@
   },
   {
     "inputs": [],
-    "name": "SavingsAccount__notBackup",
+    "name": "SavingsAccount__SafekeeperWithdrawalAlreadyMadeToday",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__SafekeeperWithdrawalLimitTooSmall",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "SavingsAccount__notOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccount__notSafekeeper",
     "type": "error"
   },
   {
@@ -88,72 +88,6 @@
         "internalType": "uint24",
         "name": "",
         "type": "uint24"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "backupAccountEnableBigWithdrawal",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "backupUserWithdrawal",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getBackupAccount",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getBackupAccountBigWithdrawalDay",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getBackupAccountLastWithdrawalDay",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getBackupAccountWithdrawalLimit",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -225,6 +159,58 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getSafekeeperAccount",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSafekeeperAccountBigWithdrawalDay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSafekeeperAccountLastWithdrawalDay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSafekeeperAccountWithdrawalLimit",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -262,7 +248,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "backupAccountWithdrawalLimit",
+            "name": "safekeeperAccountWithdrawalLimit",
             "type": "uint256"
           },
           {
@@ -272,7 +258,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "backupAccountLastWithdrawalDay",
+            "name": "safekeeperAccountLastWithdrawalDay",
             "type": "uint256"
           }
         ],
@@ -333,6 +319,20 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "safekeeperAccountEnableBigWithdrawal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "safekeeperUserWithdrawal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -346,7 +346,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_backupAccountLimit",
+        "name": "_safekeeperAccountLimit",
         "type": "uint256"
       }
     ],
@@ -363,7 +363,7 @@
         "type": "address"
       }
     ],
-    "name": "transferErcTokenBackup",
+    "name": "transferErcTokenMain",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -376,7 +376,7 @@
         "type": "address"
       }
     ],
-    "name": "transferErcTokenMain",
+    "name": "transferErcTokenSafekeeper",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

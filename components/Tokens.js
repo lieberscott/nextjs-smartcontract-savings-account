@@ -29,7 +29,7 @@ export default function Tokens(props) {
     const { data: tokenWithdrawal, runContractFunction: makeTokenWithdrawal } = useWeb3Contract({
       abi: instanceAbi,
       contractAddress: instanceAddress,
-      functionName: isMain ? "transferErcTokenMain" : "transferErcTokenBackup",
+      functionName: isMain ? "transferErcTokenMain" : "transferErcTokenSafekeeper",
       params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress },
     });
 
@@ -43,7 +43,10 @@ export default function Tokens(props) {
     useEffect(() => {
       console.log("depositAmount_Wei : ", depositAmount_Wei)
       if (depositAmount_Wei !== "" && props.tokenDropdownIndex !== 0) {
-        transfer()
+        transfer({
+          onSuccess: props.handleSuccess,
+          onError: e => window.alert(e.message)
+        })
       }
     }, [depositAmount_Wei]);
 
@@ -152,7 +155,7 @@ export default function Tokens(props) {
             onClick={ async () =>
               props.tokenDropdownIndex !== 0 ? await props.getTokenBalance({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               }) : window.alert("Select a token in the dropdown menu first") 
             }
           >
@@ -186,7 +189,7 @@ export default function Tokens(props) {
           onClick={ async () =>
             props.tokenDropdownIndex !== 0 ? getTokenWithdrawalData({
               onSuccess: (res) => console.log(res.toString()),
-              onError: (error) => console.log(error)
+              onError: (error) => window.alert(error.message)
             }) : window.alert("Select a token in the dropdown menu first") 
           }
         >
@@ -197,8 +200,8 @@ export default function Tokens(props) {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
           onClick={ async () =>
             props.tokenDropdownIndex !== 0 ? makeTokenWithdrawal({
-              onSuccess: (res) => console.log(res.toString()),
-              onError: (error) => console.log(error)
+              onSuccess: props.handleSuccess,
+              onError: (error) => window.alert(error.message)
             }) : window.alert("Press buttons to get token balance and withdrawal data first") 
           }
         >

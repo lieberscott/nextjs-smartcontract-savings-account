@@ -15,11 +15,11 @@ export default function CreateNew(props) {
   // State hooks
   // https://stackoverflow.com/questions/58252454/react-hooks-using-usestate-vs-just-variables
   const [mainAccount, setMainAccount] = useState("");
-  const [backupAccount, setBackupAccount] = useState("");
+  const [safekeeperAccount, setSafekeeperAccount] = useState("");
   const [mainAccountWithdrawalLimit_Eth, setMainAccountWithdrawalLimit_Eth] = useState("");
   const [mainAccountWithdrawalLimit_Wei, setMainAccountWithdrawalLimit_Wei] = useState("")
-  const [backupAccountWithdrawalLimit_Eth, setBackupAccountWithdrawalLimit_Eth] = useState("");
-  const [backupAccountWithdrawalLimit_Wei, setBackupAccountWithdrawalLimit_Wei] = useState("");
+  const [safekeeperAccountWithdrawalLimit_Eth, setSafekeeperAccountWithdrawalLimit_Eth] = useState("");
+  const [safekeeperAccountWithdrawalLimit_Wei, setSafekeeperAccountWithdrawalLimit_Wei] = useState("");
   const [initialDeposit_Eth, setInitialDeposit_Eth] = useState("");
   const [initialDeposit_Wei, setInitialDeposit_Wei] = useState("");
   const [name, setName] = useState("");
@@ -33,7 +33,7 @@ export default function CreateNew(props) {
       abi: factoryAbi,
       contractAddress: savingsFactoryAddress,
       functionName: "getContractFromMainAddress",
-      params: { mainAccount, backupAccount, mainAccountWithdrawalLimit_Wei, backupAccountWithdrawalLimit_Wei, name },
+      params: { mainAccount, safekeeperAccount, mainAccountWithdrawalLimit_Wei, safekeeperAccountWithdrawalLimit_Wei, name },
       msgValue: initialDeposit_Wei !== 0 && initialDeposit_Wei
     });
 
@@ -51,11 +51,11 @@ export default function CreateNew(props) {
         try {
             await tx.wait(1)
             setMainAccount("")
-            setBackupAccount("")
+            setSafekeeperAccount("")
             setMainAccountWithdrawalLimit_Eth("")
-            setBackupAccountWithdrawalLimit_Eth("")
+            setSafekeeperAccountWithdrawalLimit_Eth("")
             setMainAccountWithdrawalLimit_Wei("")
-            setBackupAccountWithdrawalLimit_Wei("")
+            setSafekeeperAccountWithdrawalLimit_Wei("")
             setName("")
             handleNewNotification(tx)
         } catch (error) {
@@ -67,22 +67,22 @@ export default function CreateNew(props) {
       if (!ethers.utils.isAddress(mainAccount)) {
         alert("Main account is not a valid Ethereum address");
       }
-      else if (!ethers.utils.isAddress(backupAccount)) {
-        alert("Backup account is not a valid Ethereum address");
+      else if (!ethers.utils.isAddress(safekeeperAccount)) {
+        alert("Safekeeper account is not a valid Ethereum address");
       }
-      else if (mainAccount === backupAccount) {
-        alert("Backup account can not be the same as main account")
+      else if (mainAccount === safekeeperAccount) {
+        alert("Safekeeper account can not be the same as main account")
       }
       else if (parseInt(mainAccountWithdrawalLimit_Wei) <= 0 || isNaN(parseInt(mainAccountWithdrawalLimit_Wei))) {
         alert("Main account withdrawal limit must be positive and must be a number");
       }
-      else if (parseInt(backupAccountWithdrawalLimit_Wei) <= 0 || isNaN(parseInt(backupAccountWithdrawalLimit_Wei))) {
-        alert("Backup account withdrawal limit must be positive and must be a number");
+      else if (parseInt(safekeeperAccountWithdrawalLimit_Wei) <= 0 || isNaN(parseInt(safekeeperAccountWithdrawalLimit_Wei))) {
+        alert("Safekeeper account withdrawal limit must be positive and must be a number");
       }
       else {
         createSavingsAccount({
-          onSuccess: (tx) => handleSuccess(tx),
-          onError: (error) => console.log(error)
+          onSuccess: (tx) => window.alert("Savings Account successfully created. Refresh to view your updated account details"),
+          onError: (error) => window.alert(error.message)
         });
       }
     }
@@ -116,12 +116,12 @@ export default function CreateNew(props) {
       setMainAccountWithdrawalLimit_Wei(wei);
     }
 
-    const handleBackupAccountLimit = (amountInEth) => {
+    const handleSafekeeperAccountLimit = (amountInEth) => {
       const isValid = checkValidNumber(amountInEth);
       const wei = isValid ? ethers.utils.parseUnits(amountInEth, "ether").toString() : ""
       const amt = isValid ? amountInEth : ""
-      setBackupAccountWithdrawalLimit_Eth(amt);
-      setBackupAccountWithdrawalLimit_Wei(wei);
+      setSafekeeperAccountWithdrawalLimit_Eth(amt);
+      setSafekeeperAccountWithdrawalLimit_Wei(wei);
     }
 
     const handleInitialDeposit = (amountInEth) => {
@@ -166,16 +166,16 @@ export default function CreateNew(props) {
             <div className="flex flex-wrap -mx-3 mb-6">
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                  Backup Account Address
+                  Safekeeper Account Address
                 </label>
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-backup-address" type="text" placeholder={account} value={backupAccount} onChange={(e) => setBackupAccount(e.target.value) } />
+                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-safekeeper-address" type="text" placeholder={account} value={safekeeperAccount} onChange={(e) => setSafekeeperAccount(e.target.value) } />
                 <p className="text-red-500 text-xs italic">Please fill out this field.</p>
               </div>
               <div className="w-full md:w-1/2 px-3">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                   Daily ETH withdrawal limit
                 </label>
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-backup-eth-limit" type="number" min="0" placeholder="0.02" value={ backupAccountWithdrawalLimit_Eth } onChange={(e) => handleBackupAccountLimit(e.nativeEvent.value) } />
+                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-safekeeper-eth-limit" type="number" min="0" placeholder="0.02" value={ safekeeperAccountWithdrawalLimit_Eth } onChange={(e) => handleSafekeeperAccountLimit(e.target.value) } />
               </div>
             </div>
 
@@ -184,7 +184,7 @@ export default function CreateNew(props) {
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                   Initial ETH Deposit (optional)
                 </label>
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-backup-address" type="text" placeholder="0" value={ initialDeposit_Eth } onChange={(e) => handleInitialDeposit(e.target.value) } />
+                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-safekeeper-address" type="text" placeholder="0" value={ initialDeposit_Eth } onChange={(e) => handleInitialDeposit(e.target.value) } />
                 <p className="text-red-500 text-xs italic">Optional.</p>
               </div>
             </div>

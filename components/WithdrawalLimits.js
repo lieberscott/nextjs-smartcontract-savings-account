@@ -15,8 +15,8 @@ export default function WithdrawalLimits(props) {
 
     const [mainUserLimit, setMainUserLimit] = useState("")
     const [mainUserLimit_FORMATTED, setMainUserLimit_FORMATTED] = useState("")
-    const [backupUserLimit, setBackupUserLimit] = useState("")
-    const [backupUserLimit_FORMATTED, setBackupUserLimit_FORMATTED] = useState("")
+    const [safekeeperUserLimit, setSafekeeperUserLimit] = useState("")
+    const [safekeeperUserLimit_FORMATTED, setSafekeeperUserLimit_FORMATTED] = useState("")
 
 
     const dispatch = useNotification()
@@ -35,28 +35,28 @@ export default function WithdrawalLimits(props) {
       abi: instanceAbi,
       contractAddress: instanceAddress,
       functionName: "setTokenLimits",
-      params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _mainAccountLimit: mainUserLimit_FORMATTED, _backupAccountLimit: backupUserLimit_FORMATTED },
+      params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _mainAccountLimit: mainUserLimit_FORMATTED, _safekeeperAccountLimit: safekeeperUserLimit_FORMATTED },
     });
 
     // const { runContractFunction: setTokenLimits } = useWeb3Contract({
     //   abi: instanceAbi,
     //   contractAddress: instanceAddress,
     //   functionName: "setTokenLimits",
-    //   params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _mainAccountLimit: mainUserLimit_FORMATTED, _backupAccountLimit: backupUserLimit_FORMATTED },
+    //   params: { _tokenAddress: props.tokenDropdown[props.tokenDropdownIndex].contractAddress, _mainAccountLimit: mainUserLimit_FORMATTED, _safekeeperAccountLimit: safekeeperUserLimit_FORMATTED },
     // });
 
 
 
     useEffect(() => {
       console.log("mainUserLimit_FORMATTED : ", mainUserLimit_FORMATTED)
-      console.log("backupUserLimit_FORMATTED : ", backupUserLimit_FORMATTED)
-      if (mainUserLimit_FORMATTED !== "" && backupUserLimit_FORMATTED !== "" && mainUserLimit >= backupUserLimit) {
+      console.log("safekeeperUserLimit_FORMATTED : ", safekeeperUserLimit_FORMATTED)
+      if (mainUserLimit_FORMATTED !== "" && safekeeperUserLimit_FORMATTED !== "" && mainUserLimit >= safekeeperUserLimit) {
         setTokenLimits()
       }
       // else {
-      //   window.alert("Your withdrawal limits are invalid. Make sure the Main Account Owner's withdrawal limit is larger than or equal to your Backup User's withdrawal limit")
+      //   window.alert("Your withdrawal limits are invalid. Make sure the Main Account Owner's withdrawal limit is larger than or equal to your Safekeeper User's withdrawal limit")
       // }
-    }, [mainUserLimit_FORMATTED, backupUserLimit_FORMATTED])
+    }, [mainUserLimit_FORMATTED, safekeeperUserLimit_FORMATTED])
 
     // no list means it'll update everytime anything changes or happens
     // empty list means it'll run once after the initial rendering
@@ -100,16 +100,16 @@ export default function WithdrawalLimits(props) {
 
     const handleSetTokenLimits = () => {
       const isNumMain = regex.test(mainUserLimit);
-      const isNumBackup = regex.test(backupUserLimit);
+      const isNumSafekeeper = regex.test(safekeeperUserLimit);
       console.log("isNumMain : ", isNumMain)
-      console.log("isNumBackup : ", isNumBackup)
-      if (isNumMain && isNumBackup) {
+      console.log("isNumSafekeeper : ", isNumSafekeeper)
+      if (isNumMain && isNumSafekeeper) {
         // convert token amount with decimals
         const formattedMain = ethers.utils.parseUnits(mainUserLimit, props.tokenDropdown[props.tokenDropdownIndex].decimals).toString()
-        const formattedBackup = ethers.utils.parseUnits(backupUserLimit, props.tokenDropdown[props.tokenDropdownIndex].decimals).toString()
+        const formattedSafekeeper = ethers.utils.parseUnits(safekeeperUserLimit, props.tokenDropdown[props.tokenDropdownIndex].decimals).toString()
 
         setMainUserLimit_FORMATTED(formattedMain)
-        setBackupUserLimit_FORMATTED(formattedBackup)
+        setSafekeeperUserLimit_FORMATTED(formattedSafekeeper)
 
       }
       else {
@@ -167,7 +167,7 @@ export default function WithdrawalLimits(props) {
             onClick={ async () =>
               props.tokenDropdownIndex !== 0 ? await props.getTokenBalance({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               }) : window.alert("Select a token in the dropdown menu first") 
             }
           >
@@ -194,14 +194,14 @@ export default function WithdrawalLimits(props) {
             onClick={ async () =>
               props.tokenDropdownIndex !== 0 ? getTokenWithdrawalData({
                 onSuccess: (res) => console.log(res.toString()),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               }) : window.alert("Select a token in the dropdown menu first") 
             }
           >
             Get Daily Limit
           </button>
         </div>
-        <p className="px-3 text-red-500 text-xs italic">If Daily Limit is not 0, then your daily limit has already been set and may not be reset. Otherwise, you may set a daily limit for both your main account and your backup account below.</p>
+        <p className="px-3 text-red-500 text-xs italic">If Daily Limit is not 0, then your daily limit has already been set and may not be reset. Otherwise, you may set a daily limit for both your main account and your safekeeper account below.</p>
 
 
 
@@ -214,9 +214,9 @@ export default function WithdrawalLimits(props) {
 
         <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0 mt-8">
           <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-            Backup User Limit
+            Safekeeper User Limit
           </label>
-            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={backupUserLimit} onChange={ (e) => setBackupUserLimit(e.target.value) } placeholder="Tokens per day" />
+            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={safekeeperUserLimit} onChange={ (e) => setSafekeeperUserLimit(e.target.value) } placeholder="Tokens per day" />
         </div>
       </div>
 
@@ -224,7 +224,7 @@ export default function WithdrawalLimits(props) {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
         onClick={ async () =>
           props.tokenDropdownIndex !== 0 ? handleSetTokenLimits({
-            onSuccess: (res) => console.log(res.toString()),
+            onSuccess: props.handleSuccess,
             onError: (error) => window.alert("Failed. You may have already set withdrawal limits or you set the withdrawal limit to 0.")
           }) : window.alert("Select Token from Dropdown first") 
         }

@@ -433,7 +433,7 @@ export default function AccountDetails(props) {
               onClick={ async () =>
                 await getLargeWithdrawalDate({
                   onSuccess: (res) => console.log(res),
-                  onError: (error) => console.log(error)
+                  onError: (error) => window.alert(error.message)
                 })
               }
             >Get Date</button>
@@ -452,7 +452,7 @@ export default function AccountDetails(props) {
             onClick={ async () =>
               await getEthBalance({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               })
             }
           >
@@ -479,7 +479,7 @@ export default function AccountDetails(props) {
             onClick={ async () =>
               await getEthWithdrawalData({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               })
             }
           >
@@ -494,7 +494,7 @@ export default function AccountDetails(props) {
         onClick={ async () =>
           await makeEthWithdrawal({
             onSuccess: (res) => console.log(res),
-            onError: (error) => console.log(error)
+            onError: (error) => window.alert(error.message)
           })
         }
       >
@@ -516,7 +516,7 @@ export default function AccountDetails(props) {
               onClick={ async () =>
                 await getLargeWithdrawalDate({
                   onSuccess: (res) => console.log(res),
-                  onError: (error) => console.log(error)
+                  onError: (error) => window.alert(error.message)
                 })
               }
             >Get Date</button>
@@ -596,7 +596,7 @@ export default function AccountDetails(props) {
             onClick={ async () =>
               tokenDropdownIndex !== 0 ? await getTokenBalance({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               }) : window.alert("Select a token in the dropdown menu first") 
             }
           >
@@ -630,7 +630,7 @@ export default function AccountDetails(props) {
           onClick={ async () =>
             tokenDropdownIndex !== 0 ? getTokenWithdrawalData({
               onSuccess: (res) => console.log(res.toString()),
-              onError: (error) => console.log(error)
+              onError: (error) => window.alert(error.message)
             }) : window.alert("Select a token in the dropdown menu first") 
           }
         >
@@ -643,7 +643,7 @@ export default function AccountDetails(props) {
         onClick={ async () =>
           tokenDropdownIndex !== 0 ? makeTokenWithdrawal({
             onSuccess: (res) => console.log(res.toString()),
-            onError: (error) => console.log(error)
+            onError: (error) => window.alert(error.message)
           }) : window.alert("Press buttons to get token balance and withdrawal data first") 
         }
       >

@@ -36,6 +36,7 @@ export default function AccountDetails(props) {
 
   const dispatch = useNotification()
 
+
   /* View Functions */
 
 
@@ -84,7 +85,7 @@ export default function AccountDetails(props) {
 
   const fetchNewTokenData = async () => {
 
-    const listName = isMain ? "mainAccountTokens" + chainId : "backupAccountTokens" + chainId
+    const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
 
     // Add to local storage item
     let list = JSON.parse(window.localStorage.getItem(listName))
@@ -108,7 +109,7 @@ export default function AccountDetails(props) {
       const newItem = { index: list.length + 1, name, symbol, contractAddress: newTokenAddress, decimals } // +1 because "Select is index 0 and is not a part of the list (so list will have 0 length when we add the first item, which should be at index 1)
       list.push(newItem)
 
-      const listName = isMain ? "mainAccountTokens" + chainId : "backupAccountTokens" + chainId
+      const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
 
       window.localStorage.setItem(listName, JSON.stringify(list))
       
@@ -127,7 +128,7 @@ export default function AccountDetails(props) {
 
     await getName()
 
-    const listName = isMain ? "mainAccountTokens" + chainId : "backupAccountTokens" + chainId
+    const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
     // get ERC-20 tokens that have been saved
     let list = JSON.parse(window.localStorage.getItem(listName))
     list = list && list.length ? list : [];
@@ -189,18 +190,7 @@ export default function AccountDetails(props) {
   }, [tokenDropdownIndex])
 
 
-  // no list means it'll update everytime anything changes or happens
-  // empty list means it'll run once after the initial rendering
-  // and dependencies mean it'll run whenever those things in the list change
 
-  // An example filter for listening for events, we will learn more on this next Front end lesson
-  // const filter = {
-  //     address: savingsFactoryAddress,
-  //     topics: [
-  //         // the name of the event, parnetheses containing the data type of each event, no spaces
-  //         utils.id("RaffleEnter(address)"),
-  //     ],
-  // }
 
   const handleNewNotification = () => {
     dispatch({
@@ -215,7 +205,6 @@ export default function AccountDetails(props) {
   const handleSuccess = async (tx) => {
     try {
         await tx.wait(1)
-        updateUIValues()
         handleNewNotification(tx)
     } catch (error) {
         console.log(error)
@@ -256,7 +245,8 @@ export default function AccountDetails(props) {
 
   return (
     <>
-      <p>Smart Contract Address: { accountName ? accountName.toString() : "" } ({ account ? account.toString() : "" })</p>
+      { isMain ? <p>Smart Contract Address: { accountName ? accountName.toString() : "" } ({ instanceAddress ? instanceAddress.toString() : "" })</p>
+      : <p>You are safekeeping: { accountName ? accountName.toString() : "" } ({ instanceAddress ? instanceAddress.toString() : "" })</p> }
 
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
         <li className="mr-2">
@@ -294,6 +284,7 @@ export default function AccountDetails(props) {
           ethBalance={ ethBalance }
           getEthBalance={ getEthBalance }
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
+          handleSuccess={ handleSuccess }
         /> : [] }
         
       { tab === 2 ?
@@ -310,6 +301,7 @@ export default function AccountDetails(props) {
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
+          handleSuccess={ handleSuccess }
         /> : [] }
 
       { tab === 3 ?
@@ -318,6 +310,7 @@ export default function AccountDetails(props) {
           ethBalance={ ethBalance }
           getEthBalance={ getEthBalance }
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
+          handleSuccess={ handleSuccess }
         /> : [] }
 
       { tab === 4 ?
@@ -334,6 +327,7 @@ export default function AccountDetails(props) {
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
+          handleSuccess={ handleSuccess }
         /> : [] }
 
       { tab === 5 ?
@@ -350,12 +344,14 @@ export default function AccountDetails(props) {
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
           displayLastWithdrawalDay={ displayLastWithdrawalDay }
+          handleSuccess={ handleSuccess }
         /> : [] }
 
         { tab === 6 ?
           <EnableBigWithdrawals
             instanceAddress={ instanceAddress }
             displayLastWithdrawalDay={ displayLastWithdrawalDay}
+            handleSuccess={ handleSuccess }
           />
         : [] }
         

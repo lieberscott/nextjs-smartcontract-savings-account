@@ -25,7 +25,7 @@ export default function LargeETHWithdrawals(props) {
     const { data: largeWithdrawalDate, runContractFunction: getLargeWithdrawalDate } = useWeb3Contract({
       abi: instanceAbi,
       contractAddress: instanceAddress,
-      functionName: "getBackupAccountBigWithdrawalDay",
+      functionName: "getSafekeeperAccountBigWithdrawalDay",
       params: { },
     });
 
@@ -69,7 +69,7 @@ export default function LargeETHWithdrawals(props) {
       console.log("withdraw: ", largeWithdrawalAmt_ETH_FORMATTED)
       if (largeWithdrawalAmt_ETH_FORMATTED !== "") {
         mainAccountMakeBigWithdrawal({
-          onSuccess: (res) => console.log(res),
+          onSuccess: props.handleSuccess,
           onError: (error) => window.alert("Withdrawal may not be authorized")
         })
       }
@@ -121,7 +121,7 @@ export default function LargeETHWithdrawals(props) {
             Date when a large withdrawal was most recently enabled
           </label>
           <p className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">{ largeWithdrawalDate ? props.displayLastWithdrawalDay(largeWithdrawalDate.toString()) : "..." }</p>
-          <p className="text-red-500 text-xs italic">Your backup account holder must enable a large withdrawal before you can make it.</p>
+          <p className="text-red-500 text-xs italic">Your safekeeper account holder must enable a large withdrawal before you can make it.</p>
         </div>
         <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <button
@@ -129,7 +129,7 @@ export default function LargeETHWithdrawals(props) {
             onClick={ async () =>
               await getLargeWithdrawalDate({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               })
             }
           >Get Date</button>
@@ -147,7 +147,7 @@ export default function LargeETHWithdrawals(props) {
             onClick={ async () =>
               await props.getEthBalance({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               })
             }
           >

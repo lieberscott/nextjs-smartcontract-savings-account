@@ -53,20 +53,20 @@ export default function SavingsAccount() {
         params: { _mainAccount: account },
     });
 
-    const { data: contractInstanceAddressFromBackup, runContractFunction: getContractFromBackupAddress } = useWeb3Contract({
+    const { data: contractInstanceAddressFromSafekeeper, runContractFunction: getContractFromSafekeeperAddress } = useWeb3Contract({
         abi: factoryAbi,
         contractAddress: savingsFactoryAddress,
-        functionName: "getContractFromBackupAddress",
-        params: { _backupAccount: account },
+        functionName: "getContractFromSafekeeperAddress",
+        params: { _safekeeperAccount: account },
     });
 
     const updateUIValues = async () => {
 
         const instanceMain = (await getContractFromMainAddress()).toString();
-        const instanceBackup = (await getContractFromBackupAddress().toString());
+        const instanceSafekeeper = (await getContractFromSafekeeperAddress().toString());
 
         // setContractInstanceMain(instanceMain)
-        // setContractInstanceBackup(instanceBackup)
+        // setContractInstanceSafekeeper(instanceSafekeeper)
     }
 
     useEffect(() => {
@@ -117,7 +117,7 @@ export default function SavingsAccount() {
     const inactiveTab = "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
     const activeTab = "inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"
 
-    console.log("contractInstanceFromBackuop : ", contractInstanceAddressFromBackup)
+    console.log("contractInstanceFromBackuop : ", contractInstanceAddressFromSafekeeper)
 
     return (
         <div className="p-5">
@@ -130,10 +130,10 @@ export default function SavingsAccount() {
               <a href="#" onClick={() => setPrimaryTab(1)} className={ primaryTab === 1 ? activeTab : inactiveTab }>How It Works</a>
             </li>
             <li className="mr-2">
-              <a href="#" onClick={() => setPrimaryTab(2)} className={ primaryTab === 2 ? activeTab : inactiveTab }>Primary Account</a>
+              <a href="#" onClick={() => setPrimaryTab(2)} className={ primaryTab === 2 ? activeTab : inactiveTab }>Your Account</a>
             </li>
             <li className="mr-2">
-              <a href="#" onClick={() => setPrimaryTab(3)} className={ primaryTab === 3 ? activeTab : inactiveTab}>Backup Account</a>
+              <a href="#" onClick={() => setPrimaryTab(3)} className={ primaryTab === 3 ? activeTab : inactiveTab}>Safekeeping</a>
             </li>
             <li>
               <a href="#" onClick={() => setPrimaryTab(4)} className={ primaryTab === 4 ? activeTab : inactiveTab}>Create New Savings Account!</a>
@@ -146,8 +146,8 @@ export default function SavingsAccount() {
           {/* Main Account */}
           { isWeb3Enabled && contractInstanceAddressFromMain !== zeroXAddress && primaryTab === 2 ? <AccountDetails isMain={ true } instanceAddress={ contractInstanceAddressFromMain } /> : [] }
           
-          {/* Backup Account */}
-          { isWeb3Enabled && contractInstanceAddressFromBackup !== zeroXAddress && primaryTab === 3 ? <AccountDetails isMain={ false } instanceAddress={ contractInstanceAddressFromBackup } /> : [] }
+          {/* Safekeeper Account */}
+          { isWeb3Enabled && contractInstanceAddressFromSafekeeper !== zeroXAddress && primaryTab === 3 ? <AccountDetails isMain={ false } instanceAddress={ contractInstanceAddressFromSafekeeper } /> : [] }
 
           { isWeb3Enabled && primaryTab === 4 ? <CreateNew /> : [] }
 

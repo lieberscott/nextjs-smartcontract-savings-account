@@ -1,1 +1,138 @@
-[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"SavingsAccountFactory__AccountAlreadyExists","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"mainAccount","type":"address"},{"indexed":true,"internalType":"address","name":"backupAccount","type":"address"},{"indexed":false,"internalType":"uint256","name":"mainAccountWithdrawalLimit","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"backupAccountWithdrawalLimit","type":"uint256"}],"name":"SavingsAccountCreated","type":"event"},{"inputs":[{"internalType":"address","name":"_mainAccount","type":"address"},{"internalType":"address","name":"_backupAccount","type":"address"},{"internalType":"uint256","name":"_mainAccountWithdrawalLimit","type":"uint256"},{"internalType":"uint256","name":"_backupAccountWithdrawalLimit","type":"uint256"}],"name":"createSavingsAccount","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_backupAccount","type":"address"}],"name":"getContractFromBackupAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_mainAccount","type":"address"}],"name":"getContractFromMainAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"i_owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}]
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccountFactory__AccountAlreadyExists",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SavingsAccountFactory__SafekeeperAccountAlreadyExists",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "mainAccount",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "safekeeperAccount",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "mainAccountWithdrawalLimit",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "safekeeperAccountWithdrawalLimit",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "SavingsAccountCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_mainAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_safekeeperAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_mainAccountWithdrawalLimit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_safekeeperAccountWithdrawalLimit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      }
+    ],
+    "name": "createSavingsAccount",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_mainAccount",
+        "type": "address"
+      }
+    ],
+    "name": "getContractFromMainAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_safekeeperAccount",
+        "type": "address"
+      }
+    ],
+    "name": "getContractFromSafekeeperAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "i_owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

@@ -24,21 +24,21 @@ export default function Eth(props) {
     const { data: withdrawalLimit, runContractFunction: getEthWithdrawalLimit } = useWeb3Contract({
       abi: instanceAbi,
       contractAddress: instanceAddress,
-      functionName: isMain ? "getMainAccountWithdrawalLimit" : "getBackupAccountWithdrawalLimit",
+      functionName: isMain ? "getMainAccountWithdrawalLimit" : "getSafekeeperAccountWithdrawalLimit",
       params: { },
     });
 
     const { data: lastWithdrawalDay, runContractFunction: getEthLastWithdrawalDay } = useWeb3Contract({
       abi: instanceAbi,
       contractAddress: instanceAddress,
-      functionName: isMain ? "getMainAccountLastWithdrawalDay" : "getBackupAccountLastWithdrawalDay",
+      functionName: isMain ? "getMainAccountLastWithdrawalDay" : "getSafekeeperAccountLastWithdrawalDay",
       params: { },
     });
 
     const { runContractFunction: makeEthWithdrawal } = useWeb3Contract({
       abi: instanceAbi,
       contractAddress: instanceAddress,
-      functionName: isMain ? "mainUserWithdrawal" : "backupUserWithdrawal",
+      functionName: isMain ? "mainUserWithdrawal" : "safekeeperUserWithdrawal",
       params: { },
     });
 
@@ -79,7 +79,10 @@ export default function Eth(props) {
 
     useEffect(() => {
       if (depositAmount_Wei !== "") {
-        makeDeposit()
+        makeDeposit({
+          onSuccess: props.handleSuccess,
+          onError: e => window.alert(e.message)
+        })
       }
     }, [depositAmount_Wei]);
 
@@ -157,7 +160,7 @@ export default function Eth(props) {
             onClick={ async () =>
               await props.getEthBalance({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               })
             }
           >
@@ -184,7 +187,7 @@ export default function Eth(props) {
             onClick={ async () =>
               await getEthWithdrawalData({
                 onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onError: (error) => window.alert(error.message)
               })
             }
           >
@@ -196,8 +199,8 @@ export default function Eth(props) {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
             onClick={ async () =>
               await makeEthWithdrawal({
-                onSuccess: (res) => console.log(res),
-                onError: (error) => console.log(error)
+                onSuccess: (res) => props.handleSuccess,
+                onError: (error) => window.alert(error.message + " You may have already made a withdrawal today.")
               })
             }
           >

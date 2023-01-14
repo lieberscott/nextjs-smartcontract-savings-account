@@ -224,7 +224,11 @@ export default function WithdrawalLimits(props) {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
         onClick={ async () =>
           props.tokenDropdownIndex !== 0 ? handleSetTokenLimits({
-            onSuccess: props.handleSuccess,
+            onSuccess: async (tx) => {
+              props.handleSuccess(tx)
+              await tx.wait(1)
+              getTokenWithdrawalData()
+            },
             onError: (error) => window.alert("Failed. You may have already set withdrawal limits or you set the withdrawal limit to 0.")
           }) : window.alert("Select Token from Dropdown first") 
         }

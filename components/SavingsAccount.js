@@ -144,10 +144,10 @@ export default function SavingsAccount() {
           { primaryTab === 1 ? <HowItWorks /> : [] }
 
           {/* Main Account */}
-          { isWeb3Enabled && contractInstanceAddressFromMain !== zeroXAddress && primaryTab === 2 ? <AccountDetails isMain={ true } instanceAddress={ contractInstanceAddressFromMain } /> : [] }
+          { isWeb3Enabled && contractInstanceAddressFromMain !== zeroXAddress && primaryTab === 2 ? <AccountDetails isMain={ true } instanceAddress={ contractInstanceAddressFromMain } /> : <p>You do not have a primary account</p> }
           
           {/* Safekeeper Account */}
-          { isWeb3Enabled && contractInstanceAddressFromSafekeeper !== zeroXAddress && primaryTab === 3 ? <AccountDetails isMain={ false } instanceAddress={ contractInstanceAddressFromSafekeeper } /> : [] }
+          { isWeb3Enabled && contractInstanceAddressFromSafekeeper !== zeroXAddress && primaryTab === 3 ? <AccountDetails isMain={ false } instanceAddress={ contractInstanceAddressFromSafekeeper } /> : <p>You are not safekeeping anyone's account</p> }
 
           { isWeb3Enabled && primaryTab === 4 ? <CreateNew /> : [] }
 

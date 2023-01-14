@@ -11,8 +11,6 @@ export default function Tokens(props) {
     const instanceAddress = props.instanceAddress
     const isMain = props.isMain
 
-    const dispatch = useNotification()
-
     const [depositAmount, setDepositAmount] = useState("")
     const [depositAmount_Wei, setDepositAmount_Wei] = useState("")
 
@@ -44,25 +42,15 @@ export default function Tokens(props) {
       console.log("depositAmount_Wei : ", depositAmount_Wei)
       if (depositAmount_Wei !== "" && props.tokenDropdownIndex !== 0) {
         transfer({
-          onSuccess: props.handleSuccess,
+          onSuccess: async (tx) => {
+            props.handleSuccess(tx, 2)
+            await tx.wait(1)
+            getTokenWithdrawalData()
+          },
           onError: e => window.alert(e.message)
         })
       }
     }, [depositAmount_Wei]);
-
-
-    // no list means it'll update everytime anything changes or happens
-    // empty list means it'll run once after the initial rendering
-    // and dependencies mean it'll run whenever those things in the list change
-
-    // An example filter for listening for events, we will learn more on this next Front end lesson
-    // const filter = {
-    //     address: savingsFactoryAddress,
-    //     topics: [
-    //         // the name of the event, parnetheses containing the data type of each event, no spaces
-    //         utils.id("RaffleEnter(address)"),
-    //     ],
-    // }
 
 
     const handleDeposit = () => {
@@ -76,25 +64,6 @@ export default function Tokens(props) {
       else {
         window.alert("Withdrawal amount is not valid")
       }
-    }
-
-    const handleNewNotification = () => {
-        dispatch({
-            type: "info",
-            message: "Transaction Complete!",
-            title: "Transaction Notification",
-            position: "topR",
-            icon: "bell",
-        })
-    }
-
-    const handleSuccess = async (tx) => {
-        try {
-            await tx.wait(1)
-            handleNewNotification(tx)
-        } catch (error) {
-            console.log(error)
-        }
     }
 
 
@@ -199,8 +168,13 @@ export default function Tokens(props) {
           <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
           onClick={ async () =>
-            props.tokenDropdownIndex !== 0 ? makeTokenWithdrawal({
-              onSuccess: props.handleSuccess,
+            tokenWithdrawalData[0].toString() === "0" ? window.alert("You have not set withdrawal limits yet. Go to the 'Set ERC20 Withdrawal Limits' tab first")
+            : props.tokenDropdownIndex !== 0 ? makeTokenWithdrawal({
+              onSuccess: async (tx) => {
+                props.handleSuccess(tx, 2)
+                await tx.wait(1)
+                getTokenWithdrawalData()
+              },
               onError: (error) => window.alert(error.message)
             }) : window.alert("Press buttons to get token balance and withdrawal data first") 
           }

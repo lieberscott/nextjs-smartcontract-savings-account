@@ -16,7 +16,6 @@ export default function Eth(props) {
     const [depositAmount, setDepositAmount] = useState("")
     const [depositAmount_Wei, setDepositAmount_Wei] = useState("")
 
-    const dispatch = useNotification()
 
 
     /* View Functions */
@@ -49,8 +48,6 @@ export default function Eth(props) {
     });
 
 
-    console.log("lastWithdrawalDay : ", lastWithdrawalDay)
-
     const handleDeposit = () => {
       // ensure eth amount is valid (not letters)
       const isnum = regex.test(depositAmount);
@@ -80,67 +77,17 @@ export default function Eth(props) {
     useEffect(() => {
       if (depositAmount_Wei !== "") {
         makeDeposit({
-          onSuccess: props.handleSuccess,
+          onSuccess: async (tx) => {
+            console.log("success")
+            props.handleSuccess(tx, 1)
+            await tx.wait(1)
+            getEthLastWithdrawalDay()
+          },
           onError: e => window.alert(e.message)
         })
       }
     }, [depositAmount_Wei]);
 
-
-
-    const handleNewNotification = () => {
-        dispatch({
-            type: "info",
-            message: "Transaction Complete!",
-            title: "Transaction Notification",
-            position: "topR",
-            icon: "bell",
-        })
-    }
-
-    const handleSuccess = async (tx) => {
-        try {
-            await tx.wait(1)
-            getEthWithdrawalData()
-            handleNewNotification(tx)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-
-
-
-    const displayLastWithdrawalDay = (daysSinceEpochString) => {
-      const daysSinceEpochInt = parseInt(daysSinceEpochString)
-      const now = new Date().getUTCDate()
-      const today = Math.floor(now/8.64e7)
-
-      if (daysSinceEpochInt === 0) {
-        return "Never"
-      }
-      else if (today - daysSinceEpochInt === 0) {
-        return "Today"
-      }
-      else if (today - daysSinceEpochInt === 1) {
-        return "1d ago"
-      }
-      else if (today - daysSinceEpochInt < 30) {
-        return (today - daysSinceEpochInt) + "d ago"
-      }
-      else if (today - daysSinceEpochInt < 365) {
-        const months = Math.floor((today - daysSinceEpochInt) / 30)
-        return months + "mo ago"
-      }
-      else if (today - daysSinceEpochInt >= 365) {
-        return "Over a year ago"
-      }
-      else {
-        return "Could not determine last withdrawal date"
-      }
-    }
-  
-    // console.log("tokenDropdownIndex : ", tokenDropdownIndex)
 
 
     return (
@@ -199,7 +146,11 @@ export default function Eth(props) {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
             onClick={ async () =>
               await makeEthWithdrawal({
-                onSuccess: (res) => props.handleSuccess,
+                onSuccess: async (tx) => {
+                  props.handleSuccess(tx, 1)
+                  await tx.wait(1)
+                  getEthLastWithdrawalDay()
+                },
                 onError: (error) => window.alert(error.message + " You may have already made a withdrawal today.")
               })
             }

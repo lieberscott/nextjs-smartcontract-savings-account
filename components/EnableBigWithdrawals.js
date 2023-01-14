@@ -1,16 +1,11 @@
 import { instanceAbi } from "../constants"
 // dont export from moralis when using react
 import { useWeb3Contract } from "react-moralis"
-import { useNotification } from "web3uikit"
 
 
 export default function EnableBigWithdrawals(props) {
 
-
     const instanceAddress = props.instanceAddress
-
-    const dispatch = useNotification()
-
 
     const { data: largeWithdrawalDate, runContractFunction: getLargeWithdrawalDate } = useWeb3Contract({
       abi: instanceAbi,
@@ -26,41 +21,6 @@ export default function EnableBigWithdrawals(props) {
       params: { },
     });
 
-
-
-
-
-    // no list means it'll update everytime anything changes or happens
-    // empty list means it'll run once after the initial rendering
-    // and dependencies mean it'll run whenever those things in the list change
-
-    // An example filter for listening for events, we will learn more on this next Front end lesson
-    // const filter = {
-    //     address: savingsFactoryAddress,
-    //     topics: [
-    //         // the name of the event, parnetheses containing the data type of each event, no spaces
-    //         utils.id("RaffleEnter(address)"),
-    //     ],
-    // }
-
-    const handleNewNotification = () => {
-        dispatch({
-            type: "info",
-            message: "Transaction Complete!",
-            title: "Transaction Notification",
-            position: "topR",
-            icon: "bell",
-        })
-    }
-
-    const handleSuccess = async (tx) => {
-        try {
-            await tx.wait(1)
-            handleNewNotification(tx)
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     return (
 
@@ -90,7 +50,11 @@ export default function EnableBigWithdrawals(props) {
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
               onClick={ async () => await safekeeperAccountEnableBigWithdrawal({
-                onSuccess: props.handleSuccess,
+                onSuccess: async (tx) => {
+                  props.handleSuccess(tx)
+                  await tx.wait(1)
+                  getLargeWithdrawalDate()
+                },
                 onError: (e) => window.alert(e.message)
               })
               }

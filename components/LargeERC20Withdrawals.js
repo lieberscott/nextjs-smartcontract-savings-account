@@ -16,9 +16,6 @@ export default function LargeERC20Withdrawals(props) {
     const [largeWithdrawalAmt_ERC20, setLargeWithdrawalAmt_ERC20] = useState("")
     const [largeWithdrawalAmt_ERC20_FORMATTED, setLargeWithdrawalAmt_ERC20_FORMATTED] = useState("")
     const [largeWithdrawalAddress_ERC20, setLargeWithdrawalAddress_ERC20] = useState(account)
-
-    const dispatch = useNotification()
-
  
 
     /* View Functions */
@@ -40,6 +37,7 @@ export default function LargeERC20Withdrawals(props) {
 
 
     const handleBigWithdrawalErc20 = () => {
+      console.log("handle")
       // ensure eth amount is valid (not letters)
       const isnum = regex.test(largeWithdrawalAmt_ERC20);
       if (isnum) {
@@ -70,45 +68,11 @@ export default function LargeERC20Withdrawals(props) {
     useEffect(() => {
       if (largeWithdrawalAmt_ERC20_FORMATTED !== "") {
         (async () => await mainAccountMakeBigTokenWithdrawal({
-          onSuccess: props.handleSuccess,
+          onSuccess: (tx) => props.handleSuccess(tx, 2),
           onError: e => window.alert(e.message)
         }))
       }
     }, [largeWithdrawalAmt_ERC20_FORMATTED])
-
-
-    // no list means it'll update everytime anything changes or happens
-    // empty list means it'll run once after the initial rendering
-    // and dependencies mean it'll run whenever those things in the list change
-
-    // An example filter for listening for events, we will learn more on this next Front end lesson
-    // const filter = {
-    //     address: savingsFactoryAddress,
-    //     topics: [
-    //         // the name of the event, parnetheses containing the data type of each event, no spaces
-    //         utils.id("RaffleEnter(address)"),
-    //     ],
-    // }
-
-    const handleNewNotification = () => {
-        dispatch({
-            type: "info",
-            message: "Transaction Complete!",
-            title: "Transaction Notification",
-            position: "topR",
-            icon: "bell",
-        })
-    }
-
-    const handleSuccess = async (tx) => {
-        try {
-            await tx.wait(1)
-            updateUIValues()
-            handleNewNotification(tx)
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
 
     const handleSelection = ({ target }) => {
@@ -217,7 +181,7 @@ export default function LargeERC20Withdrawals(props) {
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
               onClick={ async () =>
-                props.tokenDropdownIndex !== 0 ? handleBigWithdrawalErc20 : window.alert("Choose a token from the dropdown menu first")
+                props.tokenDropdownIndex !== 0 ? handleBigWithdrawalErc20() : window.alert("Choose a token from the dropdown menu first")
               }
             >
               Make Large ERC20 withdrawal

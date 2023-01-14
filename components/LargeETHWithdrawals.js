@@ -69,7 +69,7 @@ export default function LargeETHWithdrawals(props) {
       console.log("withdraw: ", largeWithdrawalAmt_ETH_FORMATTED)
       if (largeWithdrawalAmt_ETH_FORMATTED !== "") {
         mainAccountMakeBigWithdrawal({
-          onSuccess: props.handleSuccess,
+          onSuccess: (tx) => props.handleSuccess(tx, 1),
           onError: (error) => window.alert("Withdrawal may not be authorized")
         })
       }

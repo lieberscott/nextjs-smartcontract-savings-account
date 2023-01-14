@@ -19,7 +19,6 @@ export default function AccountDetails(props) {
 
   const chainId = parseInt(chainIdHex)
   // const chainId = "31337"
-  console.log("chainId : ", chainId)
 
   const instanceAddress = props.instanceAddress
   const isMain = props.isMain
@@ -202,12 +201,23 @@ export default function AccountDetails(props) {
     })
   }
 
-  const handleSuccess = async (tx) => {
+  const handleSuccess = async (tx, updateType) => {
     try {
         await tx.wait(1)
         handleNewNotification(tx)
+        updateValues(updateType)
     } catch (error) {
         console.log(error)
+    }
+  }
+
+  const updateValues = (type) => {
+    if (type === 1) {
+      // user deposited eth, so update ETH balance
+      getEthBalance()
+    }
+    else if (type === 2) {
+      getTokenBalance()
     }
   }
 

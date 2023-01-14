@@ -11,6 +11,11 @@
   },
   {
     "inputs": [],
+    "name": "SavingsAccountFactory__OnlyOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "SavingsAccountFactory__SafekeeperAccountAlreadyExists",
     "type": "error"
   },
@@ -133,6 +138,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "kill",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

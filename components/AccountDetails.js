@@ -82,81 +82,6 @@ export default function AccountDetails(props) {
   });
 
 
-  const fetchNewTokenData = async () => {
-
-    const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
-
-    // Add to local storage item
-    let list = JSON.parse(window.localStorage.getItem(listName))
-    list = list && list.length ? list : [];
-
-    // check if item is already in list
-    const index = list.findIndex((item, i) => item.contractAddress === newTokenAddress)
-
-    if (index !== -1) {
-      window.alert("Item is already in your list");
-      return;
-    }
-
-    else {
-
-      // Get Name, Symbol, and Decimals
-      const name = (await getTokenName()).toString();
-      const symbol = (await getTokenSymbol()).toString();
-      const decimals = (await getTokenDecimals()).toString();
-      
-      const newItem = { index: list.length + 1, name, symbol, contractAddress: newTokenAddress, decimals } // +1 because "Select is index 0 and is not a part of the list (so list will have 0 length when we add the first item, which should be at index 1)
-      list.push(newItem)
-
-      const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
-
-      window.localStorage.setItem(listName, JSON.stringify(list))
-      
-      
-      // Add to current list
-      setTokenDropdown(prev => prev.concat(newItem))
-      setTokenDropdownIndex(list.length)
-      setNewTokenAddress("")
-      window.alert("Token added")
-    }
-  }
-
-
-
-  const updateUIValues = async () => {
-
-    await getName()
-
-    const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
-    // get ERC-20 tokens that have been saved
-    let list = JSON.parse(window.localStorage.getItem(listName))
-    list = list && list.length ? list : [];
-    const newList = list.filter((value, index, arr) => index === arr.findIndex((t) => (
-      t.contractAddress === value.contractAddress
-    ))
-  )
-    setTokenDropdown(prev => {
-      
-      const arr = prev.concat(newList)
-
-      // remove duplicates
-      const newArr = arr.filter((v,i,a)=>a.findIndex(v2=>(v2.contractAddress===v.contractAddress))===i)
-      
-      return newArr;
-    })
-    /*
-      tokenList = [
-        {
-          index: "0"
-          symbol: "UNI",
-          contractAddress: "0x32fa...",
-          decimals: "18"
-        }
-      ]
-    */
-
-  }
-
   const handleAddNewToken = async () => {
     const isValid = ethers.utils.isAddress(newTokenAddress)
 
@@ -170,13 +95,81 @@ export default function AccountDetails(props) {
   }
 
   useEffect(() => {
+
+    const fetchNewTokenData = async () => {
+      const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
+
+      // Add to local storage item
+      let list = JSON.parse(window.localStorage.getItem(listName))
+      list = list && list.length ? list : [];
+
+      // check if item is already in list
+      const index = list.findIndex((item, i) => item.contractAddress === newTokenAddress)
+
+      if (index !== -1) {
+        window.alert("Item is already in your list");
+        return;
+      }
+
+      else {
+
+        // Get Name, Symbol, and Decimals
+        const name = (await getTokenName()).toString();
+        const symbol = (await getTokenSymbol()).toString();
+        const decimals = (await getTokenDecimals()).toString();
+        
+        const newItem = { index: list.length + 1, name, symbol, contractAddress: newTokenAddress, decimals } // +1 because "Select is index 0 and is not a part of the list (so list will have 0 length when we add the first item, which should be at index 1)
+        list.push(newItem)
+
+        const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
+
+        window.localStorage.setItem(listName, JSON.stringify(list))
+        
+        
+        // Add to current list
+        setTokenDropdown(prev => prev.concat(newItem))
+        setTokenDropdownIndex(list.length)
+        setNewTokenAddress("")
+        window.alert("Token added")
+      }
+    }
+
+
     if (getNewTokenData) {
+
       fetchNewTokenData()
       setGetNewTokenData(false)
     }
   }, [getNewTokenData])
 
   useEffect(() => {
+
+    const updateUIValues = async () => {
+
+      await getName()
+  
+      const listName = isMain ? "mainAccountTokens" + chainId : "safekeeperAccountTokens" + chainId
+      // get ERC-20 tokens that have been saved
+      let list = JSON.parse(window.localStorage.getItem(listName))
+      list = list && list.length ? list : [];
+      const newList = list.filter((value, index, arr) => index === arr.findIndex((t) => (
+        t.contractAddress === value.contractAddress
+      ))
+    )
+      setTokenDropdown(prev => {
+        
+        const arr = prev.concat(newList)
+  
+        // remove duplicates
+        const newArr = arr.filter((v,i,a)=>a.findIndex(v2=>(v2.contractAddress===v.contractAddress))===i)
+        
+        return newArr;
+      })
+  
+    }
+
+
+
     if (account) {
       updateUIValues()
     }
@@ -306,7 +299,6 @@ export default function AccountDetails(props) {
           newTokenAddress={ newTokenAddress }
           setNewTokenAddress={ setNewTokenAddress }
           setTokenDropdownIndex={ setTokenDropdownIndex }
-          fetchNewTokenData={ fetchNewTokenData }
           handleAddNewToken={ handleAddNewToken }
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
@@ -332,7 +324,6 @@ export default function AccountDetails(props) {
           newTokenAddress={ newTokenAddress }
           setNewTokenAddress={ setNewTokenAddress }
           setTokenDropdownIndex={ setTokenDropdownIndex }
-          fetchNewTokenData={ fetchNewTokenData }
           handleAddNewToken={ handleAddNewToken }
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
@@ -349,7 +340,6 @@ export default function AccountDetails(props) {
           setTokenDropdownIndex={ setTokenDropdownIndex }
           newTokenAddress={ newTokenAddress }
           setNewTokenAddress={ setNewTokenAddress }
-          fetchNewTokenData={ fetchNewTokenData }
           handleAddNewToken={ handleAddNewToken }
           getTokenBalance={ getTokenBalance }
           tokenBalance={ tokenBalance }
